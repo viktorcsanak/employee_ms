@@ -10,12 +10,19 @@ import { environment } from './env';
     styleUrl: './login.component.css'
 })
 export class LoginComponent {
-    loginData = {email: '', password: ''};
-
     constructor(private http: HttpClient, private router: Router) {}
 
-    onSubmit(form: NgForm) {
-        this.http.post(`http://${environment.serverUrl}:${environment.serverPort}/api/auth/login`, this.loginData)
+    loginData = {email: '', password: ''};
+
+    onSubmit(loginForm: NgForm) {
+        if (!loginForm.valid) {
+            console.log("Login data is invalid", loginForm.value);
+            return;
+        }
+        const { email, password } = loginForm.value;
+        this.loginData.email = email;
+        this.loginData.password = password;
+        this.http.post('/api/auth/login', this.loginData)
             .subscribe(response => {
                 console.log('Login repsonse:', response);
                 this.router.navigate(['/']);

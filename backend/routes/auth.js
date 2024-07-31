@@ -15,7 +15,7 @@ router.post('/register', async (request, response) => {
         user = new User({ email, password });
         await user.save();
         const payload = {user: { id: user.id }};
-        jwt.sign(payload, 'kiskecse', { expiresIn: 3600 }, (error, token) => {
+        jwt.sign(payload, 'kiskecske', { expiresIn: 3600 }, (error, token) => {
             if (error) throw error;
             response.json({ token });
         });
@@ -30,20 +30,20 @@ router.post('/login', async (request, response) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
-           return res.status(400).json({ msg: 'Invalid credentials' });
+           return response.status(400).json({ msg: 'Invalid credentials' });
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
+            return response.status(400).json({ msg: 'Invalid credentials' });
         }
         const payload = { user: { id: user.id } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (error, token) => {
+        jwt.sign(payload, 'kiskecske', { expiresIn: 36000 }, (error, token) => {
             if (error) throw error;
-            res.json({ token });
+            response.json({ token });
         });
     } catch (error) {
         console.error(error.message);
-        res.status(500).send('Internal Server Error');
+        response.status(500).send('Internal Server Error');
     }
 });
 
