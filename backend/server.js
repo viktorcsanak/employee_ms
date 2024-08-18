@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path')
 const authRoutes = require('./routes/auth');
+const fetchRoutes = require('./routes/fetch');
 
 const application = express();
 const port = 3000;
@@ -15,6 +16,7 @@ application.use(cookieParser());
 application.use(bodyParser.json());
 
 application.use('/api/auth', authRoutes);
+application.use('/api/fetch', fetchRoutes);
 application.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
 
 application.get('*', (request, response) => {

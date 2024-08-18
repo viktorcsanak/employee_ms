@@ -1,1 +1,18 @@
-<p>home-page works!</p>
+<div *ngIf="loading">Loading user data...</div>
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+<div *ngIf="!loading && userData">
+    <h1>Welcome, {{ userData.firstName }} {{ userData.lastName }}!</h1>
+    <div class="profile-info">
+        <p><strong>Email:</strong> {{ userData.email }}</p>
+        <p><strong>First Name:</strong> {{ userData.firstName }}</p>
+        <p><strong>Middle Name:</strong> {{ userData.middleName }}</p>
+        <p><strong>Last Name:</strong> {{ userData.lastName }}</p>
+        <p><strong>Date of Birth:</strong> {{ userData.dateOfBirth | date }}</p>
+        <p><strong>City:</strong> {{ userData.placeOfResidence.city }}</p>
+        <p><strong>Address:</strong> {{ userData.placeOfResidence.address }}</p>
+        <p><strong>Postal Code:</strong> {{ userData.placeOfResidence.postalCode }}</p>
+        <p><strong>Position:</strong> {{ userData.position }}</p>
+        <p><strong>Gender:</strong> {{ userData.gender }}</p>
+        <p><strong>Start of Employment:</strong> {{ userData.startOfEmployment | date }}</p>
+    </div>
+</div>
