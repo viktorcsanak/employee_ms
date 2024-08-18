@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { environment } from './env';
 import { catchError, throwError } from 'rxjs';
 
 @Component({
@@ -24,7 +23,7 @@ export class LoginComponent {
         const { email, password } = loginForm.value;
         this.loginData.email = email;
         this.loginData.password = password;
-        this.http.post('api/auth/login', this.loginData).pipe(
+        this.http.post('/api/auth/login', this.loginData).pipe(
             catchError((error: HttpErrorResponse) => {
                 if (error.status == 401) {
                     return throwError('Invalid username or password');

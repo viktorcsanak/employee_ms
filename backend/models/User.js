@@ -1,5 +1,6 @@
 const mongodb = require('mongoose');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const { triggerAsyncId } = require('async_hooks');
 
 const UserSchema = new mongodb.Schema({
     email: {
@@ -8,6 +9,51 @@ const UserSchema = new mongodb.Schema({
         unique: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    firstName: {
+        type: String,
+        required: true
+    },
+    middleName: {
+        type: String
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    dateOfBirth: {
+        type: Date,
+        required: true
+    },
+    cellularPhone: {
+        type: String,
+    },
+    placeOfResidence: {
+        city: {
+            type: String,
+            required: true
+        },
+        postalCode: {
+            type: String,
+            required: true
+        }, 
+        address: {
+            type: String,
+            required: true
+        },
+
+    },
+    position: {
+        type: String,
+        required: true
+    },
+    startOfEmployment: {
+        type: Date,
+        required: true
+    },
+    gender: {
         type: String,
         required: true
     }

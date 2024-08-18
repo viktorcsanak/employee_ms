@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -11,29 +12,51 @@ import { Router } from '@angular/router';
 export class RegisterComponent {
     constructor(private http: HttpClient, private router: Router) {}
 
-    registerData = {email: '', password: '', confirmPassword: ''};
+    registerData = {
+        email: '',
+        password: '',
+        confirmPassword: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        dateOfBirth: '',
+        placeOfResidence: {
+            city: '',
+            address: '',
+            postalCode: ''
+        },
+        position: '',
+        startOfEmployment: '',
+        gender: ''
+    };
+    emailTakenError: string | null = null;
 
     onSubmit(registerForm: NgForm) {
         if (!registerForm.valid) {
             console.log("Register data is invalid", registerForm.value);
             return;
         }
-        const { email, password, confirmPassword } = registerForm.value;
-        this.registerData.email = email;
-        this.registerData.password = password;
-        this.registerData.confirmPassword = confirmPassword;
 
-        if (password !== confirmPassword) {
+        if (this.registerData.password !== this.registerData.confirmPassword) {
             console.log("Confirm password and password do not match!");
             return;
         }
         
-        this.http.post('/api/auth/register', this.registerData)
-            .subscribe(response => {
+        this.http.post('/api/auth/register', this.registerData).pipe(
+            catchError((error: HttpErrorResponse) => {
+                if (error.status == 400) {
+                    return throwError('Employee with email is already registered!');
+                }
+                return throwError('An unknown error occured');
+            })
+        ).subscribe({
+            next: (response) => {
                 console.log('Register repsonse:', response);
-                this.router.navigate(['/']);
-            }, error => {
-                console.error('Register Error', error);
-            });
+                this.router.navigate(['/login']);
+            }, error: (errorMessage) => {
+                console.error('Register Error', errorMessage);
+                this.emailTakenError = errorMessage;
+            }
+        });
     }
 }

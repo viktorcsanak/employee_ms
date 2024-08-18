@@ -2,15 +2,56 @@
     <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" ngModel required email>
+            <input type="email" id="email" name="email" [(ngModel)]="registerData.email" required email>
         </div>
+        <p *ngIf="emailTakenError" class="error">{{ emailTakenError }}</p>
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" ngModel required minlength="6">
+            <input type="password" id="password" name="password" [(ngModel)]="registerData.password" required minlength="6">
         </div>
         <div class="form-group">
             <label for="confirmPassword">Confirm Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" ngModel required minlength="6">
+            <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="registerData.confirmPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="firstName" id="firstName" name="firstName" [(ngModel)]="registerData.firstName" required>
+        </div>
+        <div class="form-group">
+            <label for="MiddleName">Middle Name:</label>
+            <input type="MiddleName" id="MiddleName" name="MiddleName" [(ngModel)]="registerData.middleName">
+        </div>
+        <div class="form-group">
+            <label for="LastName">Last Name:</label>
+            <input type="LastName" id="LastName" name="LastName" [(ngModel)]="registerData.lastName" required>
+        </div>
+        <div class="form-group">
+            <label for="dateOfBirth">Date of Birth:</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" [(ngModel)]="registerData.dateOfBirth" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="city" id="city" name="city" [(ngModel)]="registerData.placeOfResidence.city" required>
+        </div>
+        <div class="form-group">
+            <label for="postalCode">Postal Code:</label>
+            <input type="postalCode" id="postalCode" name="postalCode" [(ngModel)]="registerData.placeOfResidence.postalCode" required>
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="address" id="address" name="address" [(ngModel)]="registerData.placeOfResidence.address" required>
+        </div>
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="position" id="position" name="position" [(ngModel)]="registerData.position" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <input type="gender" id="gender" name="gender" [(ngModel)]="registerData.gender" required>
+        </div>
+        <div class="form-group">
+            <label for="startOfEmployment">Date of Employment:</label>
+            <input type="date" id="startOfEmployment" name="startOfEmployment" [(ngModel)]="registerData.startOfEmployment" >
         </div>
         <button type="submit" [disabled]="!registerForm.valid">Register</button>
     </form>

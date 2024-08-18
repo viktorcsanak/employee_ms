@@ -4,15 +4,31 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 router.post('/register', async (request, response) => {
-    const {email, password} = request.body;
+    const {
+        email,
+        password,
+        confirmPassword,
+        firstName,
+        middleName,
+        lastName,
+        dateOfBirth,
+        placeOfResidence: {
+            city,
+            address,
+            postalCode
+        },
+        position,
+        startOfEmployment,
+        gender
+    } = request.body;
 
     try {
-        let user = await User.findOne( { email });
+        let user = await User.findOne({ email });
         if (user) {
             return response.status(400).json({ msg: 'User already exists!'});
         }
-        
-        user = new User({ email, password });
+
+        user = new User(request.body);
         await user.save();
         const payload = {user: { id: user.id }};
         jwt.sign(payload, 'kiskecske', { expiresIn: 3600 }, (error, token) => {
