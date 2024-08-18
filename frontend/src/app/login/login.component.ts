@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from './env';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -13,6 +14,7 @@ export class LoginComponent {
     constructor(private http: HttpClient, private router: Router) {}
 
     loginData = {email: '', password: ''};
+    errorMessage: string | null = null;
 
     onSubmit(loginForm: NgForm) {
         if (!loginForm.valid) {
@@ -22,12 +24,22 @@ export class LoginComponent {
         const { email, password } = loginForm.value;
         this.loginData.email = email;
         this.loginData.password = password;
-        this.http.post('/api/auth/login', this.loginData)
-            .subscribe(response => {
+        this.http.post('api/auth/login', this.loginData).pipe(
+            catchError((error: HttpErrorResponse) => {
+                if (error.status == 401) {
+                    return throwError('Invalid username or password');
+                }
+                return throwError('An unknown error occured');
+            })
+        ).subscribe({
+            next: (response) => {
                 console.log('Login repsonse:', response);
-                this.router.navigate(['/']);
-            }, error => {
-                console.error('Login Error', error);
-            });
+                console.log('navigate to home');
+                this.router.navigate(['/home']);
+            }, error: (errorMessage) => {
+                console.error('Login Error', errorMessage);
+                this.errorMessage = errorMessage;
+            }
+        });
     }
 }

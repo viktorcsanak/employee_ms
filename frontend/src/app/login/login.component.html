@@ -8,9 +8,10 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" ngModel required minlength="6">
         </div>
-        <button type="submit" [disabled]="!loginForm.valid">Login</button>
-        </form>
-        <div class="register-link">
-            <a routerLink="/register">Create an account</a>
-        </div>
-</div>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <button type="submit" [disabled]="!loginForm.valid">Login</button>
+    </form>
+    <div class="register-link">
+        <a routerLink="/register">Create an account</a>
+    </div>
+</div>  
