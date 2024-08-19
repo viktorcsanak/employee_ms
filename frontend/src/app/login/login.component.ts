@@ -33,7 +33,6 @@ export class LoginComponent {
         ).subscribe({
             next: (response) => {
                 console.log('Login repsonse:', response);
-                console.log('navigate to home');
                 this.router.navigate(['/home']);
             }, error: (errorMessage) => {
                 console.error('Login Error', errorMessage);

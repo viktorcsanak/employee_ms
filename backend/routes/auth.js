@@ -67,6 +67,28 @@ router.post('/login', async (request, response) => {
     }
 });
 
+router.post('/logout', async (request, response) => {
+    try {
+        const token = request.cookies.token;
+        
+        if (!token) {
+            console.log('Token is not found');
+            return response.status(404).json({ msg: 'No token was found'}); 
+        }
+    
+        response.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'Strict',
+            expires: new Date(0),
+        });
+
+        return response.status(200).json({ msg: 'Logout successful' });
+    } catch (error) {
+        console.error(error.message);
+        return response.status(500).send('Internal Server Error');
+    }
+});
+
 router.get('/verify-token', (request, response) => {
     try {
         const token = request.cookies.token;
