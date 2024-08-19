@@ -56,6 +56,14 @@ const UserSchema = new mongodb.Schema({
     gender: {
         type: String,
         required: true
+    },
+    adminPrivileges: {
+        type: Boolean,
+        required: true
+    },
+    hrManagementAccess: {
+        type: Boolean,
+        required: true
     }
 });
 

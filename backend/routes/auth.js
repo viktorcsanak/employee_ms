@@ -19,7 +19,9 @@ router.post('/register', async (request, response) => {
         },
         position,
         startOfEmployment,
-        gender
+        gender,
+        adminPrivilege,
+        hrManagementAccess,
     } = request.body;
 
     try {
@@ -46,10 +48,12 @@ router.post('/login', async (request, response) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
+            console.log('email invalid');
            return response.status(401).json({ msg: 'Invalid credentials' });
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
+            console.log('password invalid');
             return response.status(401).json({ msg: 'Invalid credentials' });
         }
         const payload = { user: { id: user.id } };

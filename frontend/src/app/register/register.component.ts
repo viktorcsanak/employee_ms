@@ -27,7 +27,9 @@ export class RegisterComponent {
         },
         position: '',
         startOfEmployment: '',
-        gender: ''
+        gender: '',
+        adminPrivileges: false,
+        hrManagementAccess: false,
     };
     emailTakenError: string | null = null;
 
@@ -41,6 +43,8 @@ export class RegisterComponent {
             console.log("Confirm password and password do not match!");
             return;
         }
+
+        console.log(registerForm.value);
         
         this.http.post('/api/auth/register', this.registerData).pipe(
             catchError((error: HttpErrorResponse) => {

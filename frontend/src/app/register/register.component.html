@@ -53,6 +53,17 @@
             <label for="startOfEmployment">Date of Employment:</label>
             <input type="date" id="startOfEmployment" name="startOfEmployment" [(ngModel)]="registerData.startOfEmployment" >
         </div>
+        <div class="privileges-container">
+            <h2>Select Privileges</h2>
+            <div class="privilege-item">
+                <input type="checkbox" id="admin" name="privileges" value="admin" [(ngModel)]="registerData.adminPrivileges">
+                <label for="admin">Administrator</label>
+            </div>
+            <div class="privilege-item">
+                <input type="checkbox" id="hrManagement" name="privileges" value="hrManagement" [(ngModel)]="registerData.hrManagementAccess">
+                <label for="hrManagement">HR Manager</label>
+            </div>
+        </div>
         <button type="submit" [disabled]="!registerForm.valid">Register</button>
     </form>
 </div>
