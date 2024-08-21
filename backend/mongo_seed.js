@@ -47,7 +47,7 @@ async function seedUsers() {
             },
             {
                 email: 'bob@company.io',
-                password: await bcrypt.hash('admin', salt),
+                password: await bcrypt.hash('admin123', salt),
                 firstName: 'Bob',
                 middleName: '',
                 lastName: 'Ace',
@@ -62,24 +62,6 @@ async function seedUsers() {
                 gender: 'Male',
                 adminPrivileges: true,
                 hrManagementAccess: false,
-            },
-            {
-                email: 'jane.doe@company.io',
-                password: await bcrypt.hash('hrmanagement', salt),
-                firstName: 'Jane',
-                middleName: '',
-                lastName: 'Doe',
-                dateOfBirth: new Date(1989, 3, 12),
-                placeOfResidence: {
-                    city: 'Szabadka',
-                    address: 'not-disclosed',
-                    postalCode: '24000'
-                },
-                position: 'Lead HR Manager',
-                startOfEmployment: new Date(2015, 8, 30),
-                gender: 'Female',
-                adminPrivileges: false,
-                hrManagementAccess: true,
             },
             {
                 email: 'joe.average@company.io',
@@ -103,7 +85,6 @@ async function seedUsers() {
         await User.deleteMany();
         await User.insertMany(users);
         console.log('Users seeded successfully!');
-        console.debug(users);
         mongodb.connection.close();        
     } catch (error) {
         console.error('Failed seeding users: ', error);
