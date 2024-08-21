@@ -17,6 +17,8 @@ interface UserData {
     };
     position: string;
     startOfEmployment: string;
+    adminPrivileges: boolean;
+    hrManagementAccess: boolean;
 }
 
 @Component({
@@ -46,7 +48,7 @@ export class HomePageComponent {
     }
 
     fetchUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/fetch/user-data').pipe(
+        return this.http.get<UserData>('/api/user/').pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -66,5 +68,13 @@ export class HomePageComponent {
             }
         );
         
+    }
+
+    goToAdmin(): void {
+        this.router.navigate(['/admin']);
+    }
+
+    goToHR(): void {
+        this.router.navigate(['/hr']);
     }
 }

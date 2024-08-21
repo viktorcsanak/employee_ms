@@ -15,5 +15,11 @@
         <p><strong>Gender:</strong> {{ userData.gender }}</p>
         <p><strong>Start of Employment:</strong> {{ userData.startOfEmployment | date }}</p>
     </div>
+    <div *ngIf="userData.adminPrivileges">
+        <button type="button" (click)="goToAdmin()">Admin</button>
+    </div>
+    <div *ngIf="userData.hrManagementAccess">
+        <button type="button" (click)="goToHR()">Human Resources</button>
+    </div>
     <button type="button" (click)="logout()">Sign out</button>
 </div>

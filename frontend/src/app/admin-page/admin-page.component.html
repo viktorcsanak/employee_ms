@@ -1,0 +1,44 @@
+<div *ngIf="loading">Loading user data...</div>
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+<div *ngIf="!loading && dataForAdmin.length">
+    <table>
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Admin</th>
+            <th>HR Manager</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of dataForAdmin">
+            <td>{{ user.email }}</td>
+            <td>{{ user.firstName }} {{ user.middleName }} {{ user.lastName }}</td>
+            <td>
+            <input
+                type="checkbox"
+                [(ngModel)]="user.adminPrivileges"
+                (change)="onCheckboxChange(user)"
+            />
+            </td>
+            <td>
+            <input
+                type="checkbox"
+                [(ngModel)]="user.hrManagementAccess"
+                (change)="onCheckboxChange(user)"
+            />
+            </td>
+            <td>
+            <a href="#" (click)="onChangePassword(user)">Change Password</a>
+            </td>
+            <td>
+            <button (click)="onSaveChanges(user)">Save Changes</button>
+            </td>
+            <td>
+            <button (click)="onRemoveUser(user)">Remove</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -48,7 +48,7 @@ router.post('/login', async (request, response) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
-            console.log('email invalid');
+            console.log('email %s invalid', email);
            return response.status(401).json({ msg: 'Invalid credentials' });
         }
         const isMatch = await user.comparePassword(password);
@@ -112,6 +112,57 @@ router.get('/verify-token', (request, response) => {
         });
     } catch (error) {
         console.error(error.message);
+        return response.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/verify-admin', async (request, response) => {
+    try {
+        const token = request.cookies.token;
+        
+        if (!token) {
+            console.log('Token is not found');
+            return response.status(401).json({ isAuthenticated: false});
+        }
+    
+        const decoded = jwt.verify(token, 'kiskecske');
+        const user = await User.findById(decoded.user.id);
+
+        if (!user.adminPrivileges) {
+            console.log('User is not admin');
+            return response.status(401).json({ isAuthenticated: false});
+        }
+        return response.status(200).json({ isAuthenticated: true});
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return response.status(403).json({ message: "Token validation failed" });
+        }
+        console.error(error.message);
+        return response.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/verify-hr', async (request, response) => {
+    try {
+        const token = request.cookies.token;
+        
+        if (!token) {
+            console.log('Token is not found');
+            return response.status(401).json({ isAuthenticated: false});
+        }
+    
+        const decoded = jwt.verify(token, 'kiskecske');
+        const user = await User.findById(decoded.user.id);
+
+        if (!user.hrManagementAccess) {
+            return response.status(401).json({ isAuthenticated: false});
+        }
+        return response.status(200).json({ isAuthenticated: true});
+    } catch (error) {
+        console.error(error.message);
+        if (error.name === 'JsonWebTokenError') {
+            return response.status(403).json({ message: "Token validation failed" });
+        }
         return response.status(500).send('Internal Server Error');
     }
 });
