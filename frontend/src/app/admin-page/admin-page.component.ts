@@ -66,17 +66,17 @@ export class AdminPageComponent {
     }
 
     onRemoveUser(user: UserData): void {
-        console.log('asdasd');
         if (confirm('Are you sure you want to remove this user?')) {
             this.http.delete(`/api/user/admin/${user.__id}`).pipe(
                 catchError((error: HttpErrorResponse) => {
-                    console.error('Error in fetchUserData:', error);
-                    this.errorMessage = 'Error occurred while fetching user data.';
+                    console.error('Error in onRemoveUser:', error);
+                    this.errorMessage = 'Error occurred while removing user.';
                     return throwError('An unknown error occured');
                 })
             ).subscribe({
                 next: (data) => {
                     console.log('User removed successfully');
+                    this.dataForAdmin = this.dataForAdmin.filter(u => u.__id !== user.__id);
                 },
                 error: (error: HttpErrorResponse) => {
                     console.error('Error removing user', error);

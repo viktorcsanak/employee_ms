@@ -82,7 +82,7 @@ router.get('/admin/all', async (request, response) => {
     }
 });
 
-router.delete('/admin/:id'), async (request, response) => {
+router.delete('/admin/:id', async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -90,24 +90,27 @@ router.delete('/admin/:id'), async (request, response) => {
 
         const user = await User.findById(decoded.user.id).exec();
         if (!user) {
-            console.error('Could not find requesting user');
-            return response.status(404).json("Could not find data for admin");
+            console.error('Could not find data for admin');
+            return response.status(404).json({ msg: 'Could not find data for admin'} );
         }
         if (!user.adminPrivileges) {
-            return response.status(403).json("Requesting user is not an admin!");
+            console.error('Requesting user is not an admin!')
+            return response.status(403).json({ msg: 'Requesting user is not an admin!' });
         }
 
         const users = await User.findByIdAndDelete(request.params.id).exec();
 
-        return response.status(200).json({msg: 'User was removed'});
+        return response.status(200).json({ msg: 'User was removed' });
     } catch (error) {
         // Handle errors, including invalid token or user not found
         console.error('Error:', error.message);
         if (error.name === 'JsonWebTokenError') {
-            return response.status(403).json({ message: "Token validation failed" });
+            console.error('Token validation failed');
+            return response.status(403).json({ msg: 'Token validation failed' });
         }
-        return response.status(500).json({ message: "Internal Server Error" });
+        console.error('Internal server error');
+        return response.status(500).json({ msg: 'Internal Server Error  ' });
     }
-}
+});
 
 module.exports = router;
