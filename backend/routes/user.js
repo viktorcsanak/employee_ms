@@ -82,6 +82,42 @@ router.get('/admin/all', async (request, response) => {
     }
 });
 
+router.put('/admin/:id', async (request, response) => {
+    const token = request.cookies.token;
+
+    try {
+        const decoded = jwt.verify(token, 'kiskecske');
+
+        const user = await User.findById(decoded.user.id).exec();
+        if (!user) {
+            console.error('Could not find data for admin');
+            return response.status(404).json({ msg: 'Could not find data for admin'} );
+        }
+        if (!user.adminPrivileges) {
+            console.error('Requesting user is not an admin!')
+            return response.status(403).json({ msg: 'Requesting user is not an admin!' });
+        }
+
+        const result = await User.updateOne(
+            { _id: request.params.id }, 
+            { $set: request.body }
+        );
+
+        console.log('Update result:', result);
+
+        return response.status(200).json({ msg: 'User was updated' });
+    } catch (error) {
+        // Handle errors, including invalid token or user not found
+        console.error('Error:', error.message);
+        if (error.name === 'JsonWebTokenError') {
+            console.error('Token validation failed');
+            return response.status(403).json({ msg: 'Token validation failed' });
+        }
+        console.error('Internal server error');
+        return response.status(500).json({ msg: 'Internal Server Error  ' });
+    }
+});
+
 router.delete('/admin/:id', async (request, response) => {
     const token = request.cookies.token;
 

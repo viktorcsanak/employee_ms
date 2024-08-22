@@ -53,7 +53,6 @@ router.post('/login', async (request, response) => {
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            console.log('password invalid');
             return response.status(401).json({ msg: 'Invalid credentials' });
         }
         const payload = { user: { id: user.id } };
