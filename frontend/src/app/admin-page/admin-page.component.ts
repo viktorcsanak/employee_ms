@@ -46,7 +46,7 @@ export class AdminPageComponent {
     }
     
     fetchUserData(): Observable<UserData[]> {
-        return this.http.get<UserData>('/api/user/admin/all').pipe(
+        return this.http.get<UserData>('/api/user/management/admin').pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -56,7 +56,7 @@ export class AdminPageComponent {
     }
     
     onSaveChanges(user: UserData): void {
-        this.http.put(`/api/user/admin/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe(
+        this.http.put(`/api/user/management/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while updating user:', error);
                 this.errorMessage = 'Error occurred while updating user.';
@@ -84,7 +84,7 @@ export class AdminPageComponent {
                 return;
             }
 
-            this.http.put(`/api/user/admin/${user.__id}`, { password: newPassword}).pipe(
+            this.http.put(`/api/user/management/${user.__id}`, { password: newPassword}).pipe(
                 catchError((error: HttpErrorResponse) => {
                     console.error('Error occurred while updating user:', error);
                     this.errorMessage = 'Error occurred while updating user.';
@@ -103,7 +103,7 @@ export class AdminPageComponent {
 
     onRemoveUser(user: UserData): void {
         if (confirm('Are you sure you want to remove this user?')) {
-            this.http.delete(`/api/user/admin/${user.__id}`).pipe(
+            this.http.delete(`/api/user/management/${user.__id}`).pipe(
                 catchError((error: HttpErrorResponse) => {
                     console.error('Error occurred while removing user:', error);
                     this.errorMessage = 'Error occurred while removing user.';

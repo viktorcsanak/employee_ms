@@ -41,7 +41,7 @@ router.get('/', async (request, response) => {
     }
 });
 
-router.get('/admin/all', async (request, response) => {
+router.get('/management/:privilege', async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -51,27 +51,49 @@ router.get('/admin/all', async (request, response) => {
         if (!user) {
             return response.status(404).json("Could not find data for admin");
         }
-        if (!user.adminPrivileges) {
+        if (!user.adminPrivileges && request.params.privilege === "admin") {
+            return response.status(403).json("Requesting user is not an admin!");
+        }
+        if (!user.hrManagementAccess && request.params.privilege === "hr") {
             return response.status(403).json("Requesting user is not an admin!");
         }
 
         const users = await User.find().exec();
 
-        let data_for_admin = [];
+        let data = [];
 
         for (let user of users) {
-            data_for_admin.push({
-                __id: user.id,
-                email: user.email,
-                firstName: user.firstName,
-                middleName: user.middleName,
-                lastName: user.lastName,
-                adminPrivileges: user.adminPrivileges,
-                hrManagementAccess: user.hrManagementAccess
-            })
+            if (request.params.privilege === "admin") {
+                data.push({
+                    __id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    middleName: user.middleName,
+                    lastName: user.lastName,
+                    adminPrivileges: user.adminPrivileges,
+                    hrManagementAccess: user.hrManagementAccess
+                })
+            } else if (request.params.privilege === "hr") {
+                data.push({
+                    __id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    middleName: user.middleName,
+                    lastName: user.lastName,
+                    dateOfBirth: user.dateOfBirth,
+                    gender: user.gender,
+                    placeOfResidence: {
+                        city: user.placeOfResidence.city,
+                        postalCode: user.placeOfResidence.postalCode,
+                        address: user.placeOfResidence.address,
+                    },
+                    position: user.position,
+                    startOfEmployment: user.startOfEmployment,
+                })
+            }
         }
 
-        return response.status(200).json(data_for_admin);
+        return response.status(200).json(data);
     } catch (error) {
         // Handle errors, including invalid token or user not found
         console.error('Error:', error.message);
@@ -82,7 +104,7 @@ router.get('/admin/all', async (request, response) => {
     }
 });
 
-router.put('/admin/:id', async (request, response) => {
+router.put('/management/:id', async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -118,7 +140,7 @@ router.put('/admin/:id', async (request, response) => {
     }
 });
 
-router.delete('/admin/:id', async (request, response) => {
+router.delete('/management/:id', async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -148,5 +170,7 @@ router.delete('/admin/:id', async (request, response) => {
         return response.status(500).json({ msg: 'Internal Server Error  ' });
     }
 });
+
+
 
 module.exports = router;
