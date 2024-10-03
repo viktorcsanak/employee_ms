@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of, throwError } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 interface UserData {
     __id: any,
@@ -11,40 +11,46 @@ interface UserData {
     firstName: string;
     middleName: string;
     lastName: string;
-    additionalData: {
-        dateOfBirth: Date,
-        placeOfResidence: {
-            city: string,
-            address: string,
-            postalCode: string,
-        },
-        position: string,
-        startOfEmployment: string,
-        gender: string,
-    }
+    dateOfBirth: Date,
+    placeOfResidence: {
+        city: string,
+        address: string,
+        postalCode: string,
+    },
+    position: string,
+    startOfEmployment: string,
+    gender: string,
 }
 
 @Component({
     selector: 'app-hr-page',
     templateUrl: './hr-page.component.html',
-    styleUrl: './hr-page.component.css'
+    styleUrl: './hr-page.component.css',
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed,void', style({height: '0px', minHeight: '0'})),
+            state('expanded', style({height: '*'})),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
 })
+
 export class HrPageComponent {
-    data: UserData[] = [];
-    errorMessage: string | null = null;
+    dataSource: MatTableDataSource<UserData> = new MatTableDataSource<UserData>();    errorMessage: string | null = null;
     loading: boolean = true;
-    displayedColumns: string[] = ['email', 'fullName', 'expandedDetail'];
+    columnsToDisplay: string[] = ['email', 'fullName', 'dateOfBirth'];
+    columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+    expandedElement: UserData | null = null;
 
     constructor(
         private http: HttpClient,
-        private router: Router,
-        public dialog: MatDialog) {};
+        private router: Router) {};
 
     ngOnInit(): void {
         this.fetchUserData().subscribe({
             next: (data) => {
                 console.log('data fetched', data);
-                this.data = data;
+                this.dataSource = new MatTableDataSource(data);
                 this.loading = false;
             },
             error: (error: HttpErrorResponse) => {

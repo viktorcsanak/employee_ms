@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -41,6 +42,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
     MatButtonModule,
     MatTableModule,
     MatExpansionModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

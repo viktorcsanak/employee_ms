@@ -18,7 +18,7 @@ async function seedUsers() {
                 dateOfBirth: new Date(2000, 6, 1),
                 placeOfResidence: {
                     city: 'Szabadka',
-                    address: 'not-disclosed',
+                    address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'Medior Embedded Software Engineer',
@@ -36,7 +36,7 @@ async function seedUsers() {
                 dateOfBirth: new Date(1989, 3, 12),
                 placeOfResidence: {
                     city: 'Szabadka',
-                    address: 'not-disclosed',
+                    address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'Lead HR Manager',
@@ -54,7 +54,7 @@ async function seedUsers() {
                 dateOfBirth: new Date(1994, 12, 1),
                 placeOfResidence: {
                     city: 'Szabadka',
-                    address: 'not-disclosed',
+                    address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'System Administrator',
@@ -72,7 +72,7 @@ async function seedUsers() {
                 dateOfBirth: new Date(1994, 12, 1),
                 placeOfResidence: {
                     city: 'Szabadka',
-                    address: 'not-disclosed',
+                    address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'IT technician',
