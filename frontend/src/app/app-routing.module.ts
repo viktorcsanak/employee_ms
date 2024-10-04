@@ -10,7 +10,7 @@ import { adminGuard } from './admin.guard';
 import { hrGuard } from './hr.guard';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent, canActivate: [adminGuard] },
     { path: 'home', component: HomePageComponent, canActivate: [loginGuard] },
