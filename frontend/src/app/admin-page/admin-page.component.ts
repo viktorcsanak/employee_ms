@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,7 +26,6 @@ export class AdminPageComponent {
 
     constructor(
         private http: HttpClient,
-        private router: Router,
         public dialog: MatDialog) {};
 
     ngOnInit(): void {
