@@ -4,7 +4,6 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" [(ngModel)]="registerData.email" required email>
         </div>
-        <p *ngIf="emailTakenError" class="error">{{ emailTakenError }}</p>
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" [(ngModel)]="registerData.password" required minlength="6">
@@ -64,6 +63,8 @@
                 <label for="hrManagement">HR Manager</label>
             </div>
         </div>
+        <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+        <p *ngIf="emailTakenError" class="error">{{ emailTakenError }}</p>
         <button type="submit" [disabled]="!registerForm.valid">Register</button>
     </form>
 </div>

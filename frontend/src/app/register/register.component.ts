@@ -12,26 +12,9 @@ import { catchError, throwError } from 'rxjs';
 export class RegisterComponent {
     constructor(private http: HttpClient, private router: Router) {}
 
-    registerData = {
-        email: '',
-        password: '',
-        confirmPassword: '',
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        dateOfBirth: '',
-        placeOfResidence: {
-            city: '',
-            address: '',
-            postalCode: ''
-        },
-        position: '',
-        startOfEmployment: '',
-        gender: '',
-        adminPrivileges: false,
-        hrManagementAccess: false,
-    };
+    registerData = this.getDefaultRegisterData();
     emailTakenError: string | null = null;
+    successMessage: string | null = null;
 
     onSubmit(registerForm: NgForm) {
         if (!registerForm.valid) {
@@ -45,9 +28,11 @@ export class RegisterComponent {
         }
 
         console.log(registerForm.value);
+        console.log(this.registerData);
         
         this.http.post('/api/auth/register', this.registerData).pipe(
             catchError((error: HttpErrorResponse) => {
+                this.successMessage = null;
                 if (error.status == 400) {
                     return throwError('Employee with email is already registered!');
                 }
@@ -55,12 +40,38 @@ export class RegisterComponent {
             })
         ).subscribe({
             next: (response) => {
+                this.successMessage = 'Registration successful!';
+                this.emailTakenError = null;
+                registerForm.resetForm();
+                this.registerData = this.getDefaultRegisterData();
                 console.log('Register repsonse:', response);
-                this.router.navigate(['/login']);
             }, error: (errorMessage) => {
                 console.error('Register Error', errorMessage);
+                this.successMessage = null;
                 this.emailTakenError = errorMessage;
             }
         });
+    }
+
+    getDefaultRegisterData() {
+        return {
+            email: '',
+            password: '',
+            confirmPassword: '',
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            dateOfBirth: '',
+            placeOfResidence: {
+                city: '',
+                address: '',
+                postalCode: ''
+            },
+            position: '',
+            startOfEmployment: '',
+            gender: '',
+            adminPrivileges: false,
+            hrManagementAccess: false,
+        };
     }
 }
