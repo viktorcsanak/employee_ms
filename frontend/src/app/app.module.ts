@@ -7,6 +7,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar'
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatPaginatorModule } from '@angular/material/paginator'; 
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +46,9 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
     MatTableModule,
     MatExpansionModule,
     MatIconModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
