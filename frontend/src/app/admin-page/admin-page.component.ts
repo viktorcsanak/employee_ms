@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 interface UserData {
     __id: any,
@@ -26,6 +27,7 @@ interface UserData {
 export class AdminPageComponent {
     displayedColumns: string[] = ['select', 'email', 'fullName', 'admin', 'hr', 'actions'];
     dataForAdmin = new MatTableDataSource<UserData>([]);
+    adminUser: UserData | null = null;
     selection = new SelectionModel<UserData>(true, []);
     errorMessage: string | null = null;
 
@@ -34,7 +36,8 @@ export class AdminPageComponent {
 
     constructor(
         private http: HttpClient,
-        public dialog: MatDialog) {};
+        public dialog: MatDialog,
+        private router: Router) {};
 
     ngOnInit(): void {
         this.fetchUserData().subscribe({
@@ -50,11 +53,19 @@ export class AdminPageComponent {
                 console.error('Error fetching user data', error);
                 this.errorMessage = 'Failed to load user data. Please try again later.';
             }
+        }); 
+        this.fetchCurrentUserData().subscribe({
+            next: (data) => {
+                console.log('data fetched', data);
+                this.adminUser = data;
+                setTimeout (() => {
+                });
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error fetching user data', error);
+                this.errorMessage = 'Failed to load user data. Please try again later.';
+            }
         });   
-    }
-
-    ngAfterViewInit() {
-        
     }
     
     fetchUserData(): Observable<UserData[]> {
@@ -63,6 +74,16 @@ export class AdminPageComponent {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
                 return of([] as any);
+            })
+        );
+    }
+
+    fetchCurrentUserData(): Observable<UserData> {
+        return this.http.get<UserData>('/api/user/').pipe(
+            catchError((error: HttpErrorResponse) => {
+                console.error('Error in fetchUserData:', error);
+                this.errorMessage = 'Error occurred while fetching user data.';
+                return of(null as any); // Return a fallback observable
             })
         );
     }
@@ -179,5 +200,25 @@ export class AdminPageComponent {
                 console.error('Error removing user', error);
             }
         });
+    }
+
+    goToHome(): void {
+        this.router.navigate(['/home']);
+    }
+
+    goToHR(): void {
+        this.router.navigate(['/hr']);
+    }
+
+    logout(): void {
+        this.http.post('/api/auth/logout', {}).subscribe(
+            (response: any) => {
+                console.log(response.msg); // Log out successful
+                this.router.navigate(['/login']);
+            },
+            (error: any) => {
+                console.error('Logout failed', error);
+            }
+        );
     }
 }

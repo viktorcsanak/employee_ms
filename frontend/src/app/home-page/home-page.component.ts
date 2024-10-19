@@ -67,7 +67,6 @@ export class HomePageComponent {
                 console.error('Logout failed', error);
             }
         );
-        
     }
 
     goToAdmin(): void {

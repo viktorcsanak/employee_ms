@@ -1,6 +1,27 @@
 <div>
     <mat-toolbar>
-        <!-- <span>Actions:</span> -->
+        <button mat-button color="primary" (click)="goToHome()">
+            Home
+        </button>
+
+        <div *ngIf="adminUser">
+            <div *ngIf="adminUser.hrManagementAccess">
+                <button mat-button color="primary" (click)="goToHR()">
+                    HR Management
+                </button>
+            </div>
+        </div>
+
+        <button mat-button color="warn" (click)="logout()">
+            Sign Out
+        </button>
+        
+        <div *ngIf="adminUser">
+            <a>Welcome, {{ adminUser.firstName }} {{ adminUser.lastName }}! </a>
+        </div>
+    </mat-toolbar>
+    
+    <mat-toolbar>
         <button mat-button (click)="onToggleHR()" [disabled]="!selection.hasValue()">
             Grant/Revoke HR Privilege
         </button>

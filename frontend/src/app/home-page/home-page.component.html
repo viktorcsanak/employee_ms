@@ -1,8 +1,24 @@
 <div *ngIf="loading">Loading user data...</div>
 <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 <div *ngIf="!loading && userData">
-    <h1>Welcome, {{ userData.firstName }} {{ userData.lastName }}!</h1>
+    <mat-toolbar>
+        <div *ngIf="userData.adminPrivileges">
+            <button mat-button color="primary" (click)="goToAdmin()">
+                User Administration
+            </button>
+        </div>
+        <div *ngIf="userData.hrManagementAccess">
+            <button mat-button color="primary" (click)="goToHR()">
+                HR Management
+            </button>
+        </div>
+        <button mat-button color="warn" (click)="logout()">
+            Sign Out
+        </button>
+        <a>Welcome, {{ userData.firstName }} {{ userData.lastName }}! </a>
+    </mat-toolbar>
     <div class="profile-info">
+        <h1>Personal Information:</h1>
         <p><strong>Email:</strong> {{ userData.email }}</p>
         <p><strong>First Name:</strong> {{ userData.firstName }}</p>
         <p><strong>Middle Name:</strong> {{ userData.middleName }}</p>
@@ -15,11 +31,4 @@
         <p><strong>Gender:</strong> {{ userData.gender }}</p>
         <p><strong>Start of Employment:</strong> {{ userData.startOfEmployment | date }}</p>
     </div>
-    <div *ngIf="userData.adminPrivileges">
-        <button type="button" (click)="goToAdmin()">Admin</button>
-    </div>
-    <div *ngIf="userData.hrManagementAccess">
-        <button type="button" (click)="goToHR()">Human Resources</button>
-    </div>
-    <button type="button" (click)="logout()">Sign out</button>
 </div>

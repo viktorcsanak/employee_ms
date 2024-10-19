@@ -20,6 +20,8 @@ interface UserData {
     position: string,
     startOfEmployment: string,
     gender: string,
+    adminPrivileges: boolean;
+    hrManagementAccess: boolean;
 }
 
 @Component({
@@ -41,6 +43,7 @@ export class HrPageComponent {
     columnsToDisplay: string[] = ['email', 'fullName', 'dateOfBirth'];
     columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
     expandedElement: UserData | null = null;
+    hrUser: UserData | null = null;
 
     constructor(
         private http: HttpClient,
@@ -59,6 +62,18 @@ export class HrPageComponent {
                 this.loading = false;
             }
         });
+        this.fetchCurrentUserData().subscribe({
+            next: (data) => {
+                console.log('data fetched', data);
+                this.hrUser = data;
+                setTimeout (() => {
+                });
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error fetching user data', error);
+                this.errorMessage = 'Failed to load user data. Please try again later.';
+            }
+        }); 
     }
     
     fetchUserData(): Observable<UserData[]> {
@@ -68,6 +83,36 @@ export class HrPageComponent {
                 this.errorMessage = 'Error occurred while fetching user data.';
                 return of([] as any);
             })
+        );
+    }
+
+    fetchCurrentUserData(): Observable<UserData> {
+        return this.http.get<UserData>('/api/user/').pipe(
+            catchError((error: HttpErrorResponse) => {
+                console.error('Error in fetchUserData:', error);
+                this.errorMessage = 'Error occurred while fetching user data.';
+                return of(null as any); // Return a fallback observable
+            })
+        );
+    }
+
+    goToHome(): void {
+        this.router.navigate(['/home']);
+    }
+
+    goToAdmin(): void {
+        this.router.navigate(['/admin']);
+    }
+
+    logout(): void {
+        this.http.post('/api/auth/logout', {}).subscribe(
+            (response: any) => {
+                console.log(response.msg); // Log out successful
+                this.router.navigate(['/login']);
+            },
+            (error: any) => {
+                console.error('Logout failed', error);
+            }
         );
     }
 }
