@@ -2,8 +2,18 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { Observable, catchError, of, throwError } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+interface UserData {
+    __id: any,
+    email: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    adminPrivileges: boolean;
+    hrManagementAccess: boolean;
+}
 
 @Component({
   selector: 'app-register',
@@ -13,6 +23,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class RegisterComponent {
     constructor(private http: HttpClient, private router: Router) {}
 
+    adminUser: UserData | null = null;
     registerData = this.getDefaultRegisterData();
     emailTakenError: string | null = null;
     successMessage: string | null = null;
@@ -36,6 +47,21 @@ export class RegisterComponent {
         adminPrivileges: new FormControl(false),
         hrManagementAccess: new FormControl(false)
     });
+
+    ngOnInit() {
+        this.fetchCurrentUserData().subscribe({
+            next: (data) => {
+                console.log('data fetched', data);
+                this.adminUser = data;
+                setTimeout (() => {
+                });
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error fetching user data', error);
+                this.emailTakenError = 'Failed to load user data. Please try again later.';
+            }
+        });
+    }
 
     onSubmit() {
         if (!this.registerForm.valid) {
@@ -63,7 +89,7 @@ export class RegisterComponent {
             next: (response) => {
                 this.successMessage = 'Registration successful!';
                 this.emailTakenError = null;
-                //registerForm.resetForm();
+                this.registerForm.reset();
                 this.registerData = this.getDefaultRegisterData();
                 console.log('Register repsonse:', response);
             }, error: (errorMessage) => {
@@ -71,7 +97,17 @@ export class RegisterComponent {
                 this.successMessage = null;
                 this.emailTakenError = errorMessage;
             }
-        });
+        });   
+    }
+
+    fetchCurrentUserData(): Observable<UserData> {
+        return this.http.get<UserData>('/api/user/').pipe(
+            catchError((error: HttpErrorResponse) => {
+                console.error('Error in fetchUserData:', error);
+                this.emailTakenError = 'Error occurred while fetching user data.';
+                return of(null as any); // Return a fallback observable
+            })
+        );
     }
 
     getDefaultRegisterData() {
@@ -94,5 +130,29 @@ export class RegisterComponent {
             adminPrivileges: false,
             hrManagementAccess: false,
         };
+    }
+
+    logout(): void {
+        this.http.post('/api/auth/logout', {}).subscribe(
+            (response: any) => {
+                console.log(response.msg); // Log out successful
+                this.router.navigate(['/login']);
+            },
+            (error: any) => {
+                console.error('Logout failed', error);
+            }
+        );
+    }
+
+    goToAdmin(): void {
+        this.router.navigate(['/admin']);
+    }
+
+    goToHR(): void {
+        this.router.navigate(['/hr']);
+    }
+
+    goToHome(): void {
+        this.router.navigate(['/home']);
     }
 }
