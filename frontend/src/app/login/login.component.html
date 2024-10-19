@@ -1,14 +1,31 @@
-<div class="login-container">
-    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" ngModel required email>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" ngModel required minlength="6">
-        </div>
-    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-    <button type="submit" [disabled]="!loginForm.valid">Login</button>
-    </form>
-</div>  
+<mat-card>
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <p>
+                <mat-form-field appearance="fill">  <!-- Use 'fill' appearance to resemble the dialog fields -->
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email" required>
+                    <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+                        <span *ngIf="form.get('email')?.errors?.['required']">Email is required.</span>
+                        <span *ngIf="form.get('email')?.errors?.['email']">Invalid email format.</span>
+                    </mat-error>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="fill">  <!-- Keep the same appearance -->
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" formControlName="password" required>
+                    <mat-error *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+                        <span *ngIf="form.get('password')?.errors?.['required']">Password is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </p>
+
+            <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Login</button>
+        </form>
+    </mat-card-content>
+</mat-card>

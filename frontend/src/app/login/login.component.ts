@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-login',
@@ -15,12 +16,17 @@ export class LoginComponent {
     loginData = {email: '', password: ''};
     errorMessage: string | null = null;
 
-    onSubmit(loginForm: NgForm) {
-        if (!loginForm.valid) {
-            console.log("Login data is invalid", loginForm.value);
+    form: FormGroup = new FormGroup({
+        email: new FormControl('', { validators: [Validators.required, Validators.email] }),
+        password: new FormControl('', { validators: [Validators.required]}),
+    });
+
+    onSubmit() {
+        if (!this.form.valid) {
+            console.log("Login data is invalid", this.form.value);
             return;
         }
-        const { email, password } = loginForm.value;
+        const { email, password } = this.form.value;
         this.loginData.email = email;
         this.loginData.password = password;
         this.http.post('/api/auth/login', this.loginData).pipe(
