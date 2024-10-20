@@ -8,10 +8,11 @@ import { HrPageComponent } from './hr-page/hr-page.component';
 import { loginGuard } from './login.guard';
 import { adminGuard } from './admin.guard';
 import { hrGuard } from './hr.guard';
+import { alreadyLoggedInGuard } from './already-logged-in.guard';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent, canActivate: [alreadyLoggedInGuard] },
     { path: 'register', component: RegisterComponent, canActivate: [adminGuard] },
     { path: 'home', component: HomePageComponent, canActivate: [loginGuard] },
     { path: 'admin', component: AdminPageComponent, canActivate: [adminGuard] },
