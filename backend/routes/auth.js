@@ -57,11 +57,6 @@ router.post('/register', async (request, response) => {
 
         user = new User(request.body);
         await user.save();
-        const payload = {user: { id: user.id }};
-        jwt.sign(payload, 'kiskecske', { expiresIn: 3600 }, (error, token) => {
-            if (error) throw error;
-            response.json({ token });
-        });
     } catch (error) {
         console.error(error.message);
         return response.status(500).send('Internal Server Error!');
