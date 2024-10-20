@@ -15,14 +15,14 @@ async function seedUsers() {
                 firstName: 'Viktor',
                 middleName: '',
                 lastName: 'Csanak',
-                dateOfBirth: new Date(2000, 6, 1),
+                dateOfBirth: new Date(2000, 5, 1, 22, 0, 0), //Months are zero indexed //Months are zero indexed
                 placeOfResidence: {
                     city: 'Szabadka',
                     address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'Medior Embedded Software Engineer',
-                startOfEmployment: new Date(2022, 7,1),
+                startOfEmployment: new Date(2022, 6, 1, 22, 0, 0), //Months are zero indexed
                 gender: 'Male',
                 adminPrivileges: true,
                 hrManagementAccess: true,
@@ -33,14 +33,14 @@ async function seedUsers() {
                 firstName: 'Jane',
                 middleName: '',
                 lastName: 'Doe',
-                dateOfBirth: new Date(1989, 3, 12),
+                dateOfBirth: new Date(1989, 2, 12, 22, 0, 0), //Months are zero indexed
                 placeOfResidence: {
                     city: 'Szabadka',
                     address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'Lead HR Manager',
-                startOfEmployment: new Date(2015, 8, 30),
+                startOfEmployment: new Date(2015, 7, 30, 22, 0, 0), //Months are zero indexed
                 gender: 'Female',
                 adminPrivileges: false,
                 hrManagementAccess: true,
@@ -51,14 +51,14 @@ async function seedUsers() {
                 firstName: 'Bob',
                 middleName: '',
                 lastName: 'Ace',
-                dateOfBirth: new Date(1994, 12, 1),
+                dateOfBirth: new Date(1994, 11, 1, 22, 0, 0), //Months are zero indexed
                 placeOfResidence: {
                     city: 'Szabadka',
                     address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'System Administrator',
-                startOfEmployment: new Date(2020, 1, 25),
+                startOfEmployment: new Date(2020, 0, 25, 22, 0, 0), //Months are zero indexed
                 gender: 'Male',
                 adminPrivileges: true,
                 hrManagementAccess: false,
@@ -69,14 +69,14 @@ async function seedUsers() {
                 firstName: 'Joe',
                 middleName: '',
                 lastName: 'Average',
-                dateOfBirth: new Date(1994, 12, 1),
+                dateOfBirth: new Date(1994, 11, 1, 22, 0, 0), //Months are zero indexed
                 placeOfResidence: {
                     city: 'Szabadka',
                     address: 'undisclosed address',
                     postalCode: '24000'
                 },
                 position: 'IT technician',
-                startOfEmployment: new Date(2020, 1, 25),
+                startOfEmployment: new Date(2020, 0, 25, 22, 0, 0), //Months are zero indexed
                 gender: 'Male',
                 adminPrivileges: false,
                 hrManagementAccess: false,

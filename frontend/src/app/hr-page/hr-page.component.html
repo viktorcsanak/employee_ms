@@ -60,7 +60,7 @@
                 <div class="element-detail" 
                 [@detailExpand]="expandedElement === element ? 'expanded' : 'collapsed'">
                 <div class="element-position"><strong>Position:</strong> {{element.position}}</div>
-                <div class="element-dateOfEmployment"><strong>Start of employment:</strong> {{element.startOfEmployment}}</div>
+                <div class="element-dateOfEmployment"><strong>Start of employment:</strong> {{element.startOfEmployment | date}}</div>
                 <div class="element-residence"><strong>Location:</strong> {{element.placeOfResidence.address}}, 
                     {{element.placeOfResidence.city}} ({{element.placeOfResidence.postalCode}})
                 </div>

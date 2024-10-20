@@ -171,6 +171,4 @@ router.delete('/management/:id', async (request, response) => {
     }
 });
 
-
-
 module.exports = router;
