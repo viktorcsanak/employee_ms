@@ -1,4 +1,4 @@
-<div *ngIf="loading">Loading user data...</div>
+<!-- <div *ngIf="loading">Loading user data...</div>
 <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 <div *ngIf="!loading && userData">
     <mat-toolbar>
@@ -32,3 +32,116 @@
         <p><strong>Start of Employment:</strong> {{ userData.startOfEmployment | date }}</p>
     </div>
 </div>
+ -->
+
+<mat-toolbar class="homeToolbar">
+    <div *ngIf="userProfile.get('adminPrivileges')?.value">
+        <button mat-button color="primary" (click)="goToAdmin()">
+            User Administration
+        </button>
+    </div>
+    <div *ngIf="userProfile.get('hrManagementAccess')?.value">
+        <button mat-button color="primary" (click)="goToHR()">
+            HR Management
+        </button>
+    </div>
+    <button mat-button color="warn" (click)="logout()">
+        Sign Out
+    </button>
+    <a>Welcome, {{ userProfile.get('firstName')?.value }} {{ userProfile.get('lastName')?.value }}! </a>
+</mat-toolbar>
+
+<mat-card class="userProfile">
+    <mat-card-title class="cardTitle">User Profile</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="userProfile">
+            <!-- Email Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- First Name Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput type="text" formControlName="firstName" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Middle Name Field -->
+            <div *ngIf="userProfile.get('middleName')?.value">
+                <mat-form-field appearance="outline">
+                    <mat-label>Middle Name</mat-label>
+                    <input matInput type="text" formControlName="middleName" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Last Name Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput type="text" formControlName="lastName" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Date of Birth Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput type="date" formControlName="dateOfBirth" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Address Fields -->
+            <div formGroupName="placeOfResidence">
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>City</mat-label>
+                        <input matInput type="text" formControlName="city" [readonly]="!isEditing">
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Postal Code</mat-label>
+                        <input matInput type="text" formControlName="postalCode" [readonly]="!isEditing">
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Address</mat-label>
+                        <input matInput type="text" formControlName="address" [readonly]="!isEditing">
+                    </mat-form-field>
+                </div>
+            </div>
+    
+            <!-- Position Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Position</mat-label>
+                    <input matInput type="text" formControlName="position" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Gender Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Gender</mat-label>
+                    <input matInput type="text" formControlName="gender" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+    
+            <!-- Start of Employment Field -->
+            <div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Start of Employment</mat-label>
+                    <input matInput type="date" formControlName="startOfEmployment" [readonly]="!isEditing">
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

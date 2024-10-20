@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 interface UserData {
     email: string;
@@ -27,16 +28,39 @@ interface UserData {
     styleUrl: './home-page.component.css'
 })
 export class HomePageComponent {
-    userData: UserData | null = null;
     loading: boolean = true;
     errorMessage: string | null = null;
+    isEditing = false;
+
+    userProfile = new FormGroup({
+        email: new FormControl(''),
+        password: new FormControl(''),
+        confirmPassword: new FormControl(''),
+        firstName: new FormControl(''),
+        middleName: new FormControl(''),
+        lastName: new FormControl(''),
+        dateOfBirth: new FormControl(''),
+        placeOfResidence: new FormGroup({
+            city: new FormControl(''),
+            postalCode: new FormControl(''),
+            address: new FormControl(''),
+        }),
+        position: new FormControl(''),
+        gender: new FormControl(''),
+        startOfEmployment: new FormControl(''),
+        adminPrivileges: new FormControl(false),
+        hrManagementAccess: new FormControl(false)
+    });
     
     constructor(private http: HttpClient, private router: Router) {};
 
     ngOnInit(): void {
         this.fetchUserData().subscribe({
             next: (data) => {
-                this.userData = data;
+                data.dateOfBirth = this.formatDate(data.dateOfBirth);
+                data.startOfEmployment = this.formatDate(data.startOfEmployment);
+                this.userProfile.patchValue(data);
+                this.userProfile.disable();
                 this.loading = false;
             },
             error: (error: HttpErrorResponse) => {
@@ -45,6 +69,15 @@ export class HomePageComponent {
                 this.loading = false;
             }
         });
+    }
+
+    private formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        // Extract the date components without using the local time zone offset
+        const year = date.getUTCFullYear();
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`; // Return in 'yyyy-MM-dd' format
     }
 
     fetchUserData(): Observable<UserData> {
