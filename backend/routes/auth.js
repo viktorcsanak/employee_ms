@@ -22,9 +22,9 @@ router.post('/register', async (request, response) => {
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {
             return response.status(403).json({ message: "Token validation failed" });
-        } else if (error.name === 'TokenExpiredError') {{
+        } else if (error.name === 'TokenExpiredError') {
             return response.status(401).json({ isAuthenticated: false, msg: 'Token is expired'});
-        }}
+        }
         console.log(error.name);
         return response.status(500).send('Internal Server Error');
     }

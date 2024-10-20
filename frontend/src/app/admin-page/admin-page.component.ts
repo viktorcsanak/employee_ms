@@ -128,7 +128,6 @@ export class AdminPageComponent {
             user.adminPrivileges = !user.adminPrivileges;
             this.saveChanges(user);
         });
-        console.log('Granted admin privileges to selected users.');
     }
     
     onToggleHR() {
@@ -136,22 +135,18 @@ export class AdminPageComponent {
             user.hrManagementAccess = !user.hrManagementAccess;
             this.saveChanges(user);
         });
-        console.log('Granted HR management access to selected users.');
     }
     
     saveChanges(user: UserData): void {
-        this.http.put(`/api/user/management/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe(
-            catchError((error: HttpErrorResponse) => {
-                console.error('Error occurred while updating user:', error);
-                this.errorMessage = 'Error occurred while updating user.';
-                return throwError('Error occurred while updating user.');
-            })
-        ).subscribe({
+        this.http.put(`/api/user/management/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe().subscribe({
             next: (data) => {
                 console.log('User updated successfully');
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error updating user', error);
+                if ((error.status >= 400) && (error.status < 500)) {
+                    this.router.navigate(['/home']);
+                }
             }
         });
     }
@@ -168,37 +163,31 @@ export class AdminPageComponent {
                 return;
             }
 
-            this.http.put(`/api/user/management/${user.__id}`, { password: newPassword}).pipe(
-                catchError((error: HttpErrorResponse) => {
-                    console.error('Error occurred while updating user:', error);
-                    this.errorMessage = 'Error occurred while updating user.';
-                    return throwError('Error occurred while updating user.');
-                })
-            ).subscribe({
+            this.http.put(`/api/user/management/${user.__id}`, { password: newPassword}).pipe().subscribe({
                 next: (data) => {
                     console.log('User updated successfully');
                 },
                 error: (error: HttpErrorResponse) => {
                     console.error('Error updating user', error);
+                    if ((error.status >= 400) && (error.status < 500)) {
+                        this.router.navigate(['/home']);
+                    }
                 }
             });
         });
     }
 
     removeUser(user: UserData): void {
-        this.http.delete(`/api/user/management/${user.__id}`).pipe(
-            catchError((error: HttpErrorResponse) => {
-                console.error('Error occurred while removing user:', error);
-                this.errorMessage = 'Error occurred while removing user.';
-                return throwError('Error occurred while removing user.');
-            })
-        ).subscribe({
+        this.http.delete(`/api/user/management/${user.__id}`).pipe().subscribe({
             next: (data) => {
                 console.log('User removed successfully');
                 this.dataForAdmin.data = this.dataForAdmin.data.filter(u => u.__id !== user.__id);
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error removing user', error);
+                if ((error.status >= 400) && (error.status < 500)) {
+                    this.router.navigate(['/home']);
+                }
             }
         });
     }

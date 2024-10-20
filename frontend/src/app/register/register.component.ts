@@ -96,7 +96,7 @@ export class RegisterComponent {
                 this.emailTakenError = errorMessage.msg;
 
             }
-        });   
+        });
     }
 
     fetchCurrentUserData(): Observable<UserData> {

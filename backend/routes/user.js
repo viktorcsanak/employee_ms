@@ -36,6 +36,8 @@ router.get('/', async (request, response) => {
         console.error('Error:', error.message);
         if (error.name === 'JsonWebTokenError') {
             return response.status(403).json({ message: "Token validation failed" });
+        } else if (error.name === 'JsonWebTokenError') {
+            return response.status(403).json({ message: "Token validation failed" });
         }
         return response.status(500).json({ message: "Internal Server Error" });
     }
@@ -98,7 +100,11 @@ router.get('/management/:privilege', async (request, response) => {
         // Handle errors, including invalid token or user not found
         console.error('Error:', error.message);
         if (error.name === 'JsonWebTokenError') {
-            return response.status(403).json({ message: "Token validation failed" });
+            console.error('Token validation failed');
+            return response.status(403).json({});
+        } else if (error.name === 'TokenExpiredError') {
+            console.error('Token expired');
+            return response.status(401).json({});
         }
         return response.status(500).json({ message: "Internal Server Error" });
     }
@@ -133,7 +139,10 @@ router.put('/management/:id', async (request, response) => {
         console.error('Error:', error.message);
         if (error.name === 'JsonWebTokenError') {
             console.error('Token validation failed');
-            return response.status(403).json({ msg: 'Token validation failed' });
+            return response.status(403).json({});
+        } else if (error.name === 'TokenExpiredError') {
+            console.error('Token expired');
+            return response.status(401).json({});
         }
         console.error('Internal server error');
         return response.status(500).json({ msg: 'Internal Server Error  ' });
@@ -164,7 +173,10 @@ router.delete('/management/:id', async (request, response) => {
         console.error('Error:', error.message);
         if (error.name === 'JsonWebTokenError') {
             console.error('Token validation failed');
-            return response.status(403).json({ msg: 'Token validation failed' });
+            return response.status(403).json({});
+        } else if (error.name === 'TokenExpiredError') {
+            console.error('Token expired');
+            return response.status(401).json({});
         }
         console.error('Internal server error');
         return response.status(500).json({ msg: 'Internal Server Error  ' });
