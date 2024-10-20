@@ -4,6 +4,31 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 router.post('/register', async (request, response) => {
+    const token = request.cookies.token;
+
+    if (!token) {
+        console.log('Token is not found');
+        return response.status(401).json({ isAuthenticated: false, msg: 'Token not found'});
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'kiskecske');
+        const user = await User.findById(decoded.user.id);
+
+        if (!user.adminPrivileges) {
+            console.log('User is not admin');
+            return response.status(401).json({ isAuthenticated: false, msg: 'Token is invalid'});
+        }
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError') {
+            return response.status(403).json({ message: "Token validation failed" });
+        } else if (error.name === 'TokenExpiredError') {{
+            return response.status(401).json({ isAuthenticated: false, msg: 'Token is expired'});
+        }}
+        console.log(error.name);
+        return response.status(500).send('Internal Server Error');
+    }
+
     const {
         email,
         password,
@@ -56,7 +81,7 @@ router.post('/login', async (request, response) => {
             return response.status(401).json({ msg: 'Invalid credentials' });
         }
         const payload = { user: { id: user.id } };
-        jwt.sign(payload, 'kiskecske', { expiresIn: 36000 }, (error, token) => {
+        jwt.sign(payload, 'kiskecske', { expiresIn: 3600 }, (error, token) => {
             if (error) throw error;
             response.cookie('token', token, {
                 httpOnly: true,

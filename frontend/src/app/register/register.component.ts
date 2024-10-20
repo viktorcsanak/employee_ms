@@ -78,15 +78,7 @@ export class RegisterComponent {
         console.log(this.registerForm.value);
         console.log(this.registerData);
         
-        this.http.post('/api/auth/register', this.registerForm.value).pipe(
-            catchError((error: HttpErrorResponse) => {
-                this.successMessage = null;
-                if (error.status == 400) {
-                    return throwError('Employee with email is already registered!');
-                }
-                return throwError('An unknown error occured');
-            })
-        ).subscribe({
+        this.http.post('/api/auth/register', this.registerForm.value).pipe().subscribe({
             next: (response) => {
                 this.successMessage = 'Registration successful!';
                 this.emailTakenError = null;
@@ -95,8 +87,14 @@ export class RegisterComponent {
                 console.log('Register repsonse:', response);
             }, error: (errorMessage) => {
                 console.error('Register Error', errorMessage);
+                console.log(errorMessage.status);
+                if ((errorMessage.status >= 400) && (errorMessage.status < 500)) {
+                    console.error(errorMessage.msg);
+                    this.router.navigate(['/home']);
+                }
                 this.successMessage = null;
-                this.emailTakenError = errorMessage;
+                this.emailTakenError = errorMessage.msg;
+
             }
         });   
     }
