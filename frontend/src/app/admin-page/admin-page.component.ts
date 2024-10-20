@@ -30,6 +30,7 @@ export class AdminPageComponent {
     adminUser: UserData | null = null;
     selection = new SelectionModel<UserData>(true, []);
     errorMessage: string | null = null;
+    searchTerm: string = '';
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
@@ -200,6 +201,24 @@ export class AdminPageComponent {
                 console.error('Error removing user', error);
             }
         });
+    }
+
+    applyFilter(): void {
+        const filterValue = this.searchTerm.trim().toLowerCase();
+
+        this.dataForAdmin.filterPredicate = (data : UserData) => {
+            const isAdminFilter = filterValue.includes("is:admin");
+            const isHRFilter = filterValue.includes("is:hr");
+            const matchesSearch = data.email.toLowerCase().includes(filterValue.replace('is:admin', '').replace('is:hr', '').trim()) ||
+                                (data.firstName + ' ' + data.middleName + ' ' + data.lastName).toLowerCase().includes(filterValue.replace('is:admin', '').replace('is:hr', '').trim());
+            
+            const matchesAdmin = isAdminFilter ? data.adminPrivileges : true;
+            const matchesHR = isHRFilter ? data.hrManagementAccess : true;
+    
+            return matchesSearch && matchesAdmin && matchesHR;
+        };
+
+        this.dataForAdmin.filter = filterValue;
     }
 
     goToHome(): void {

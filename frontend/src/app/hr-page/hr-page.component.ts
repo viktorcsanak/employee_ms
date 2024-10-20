@@ -45,6 +45,7 @@ export class HrPageComponent {
     columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
     expandedElement: UserData | null = null;
     hrUser: UserData | null = null;
+    searchTerm: string = '';
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -101,6 +102,19 @@ export class HrPageComponent {
                 return of(null as any); // Return a fallback observable
             })
         );
+    }
+
+    applyFilter(): void {
+        const filterValue = this.searchTerm.trim().toLowerCase();
+
+        this.dataSource.filterPredicate = (data : UserData) => {
+            const matchesSearch = data.email.toLowerCase().includes(filterValue) ||
+                                (data.firstName + ' ' + data.middleName + ' ' + data.lastName).toLowerCase().includes(filterValue);
+            
+            return matchesSearch;
+        };
+
+        this.dataSource.filter = filterValue;
     }
 
     goToHome(): void {

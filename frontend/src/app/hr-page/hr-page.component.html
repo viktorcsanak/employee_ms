@@ -20,6 +20,13 @@
             <a>Welcome, {{ hrUser.firstName }} {{ hrUser.lastName }}! </a>
         </div>
     </mat-toolbar>
+
+    <mat-toolbar>
+        <mat-form-field appearance="fill">
+            <mat-label>Search Users</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Enter email or name">
+        </mat-form-field>
+    </mat-toolbar>
     
     <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         
