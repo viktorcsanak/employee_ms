@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 interface UserData {
@@ -45,6 +46,8 @@ export class HrPageComponent {
     expandedElement: UserData | null = null;
     hrUser: UserData | null = null;
 
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+
     constructor(
         private http: HttpClient,
         private router: Router) {};
@@ -55,6 +58,10 @@ export class HrPageComponent {
                 console.log('data fetched', data);
                 this.dataSource = new MatTableDataSource(data);
                 this.loading = false;
+
+                setTimeout (() => {
+                    this.dataSource.paginator = this.paginator;
+                });
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error fetching user data', error);
