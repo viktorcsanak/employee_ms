@@ -71,6 +71,7 @@ export class RegisterComponent {
 
         if (this.registerForm.value.password !== this.registerForm.value.confirmPassword) {
             console.log("Confirm password and password do not match!");
+            this.emailTakenError = 'Password and confirm password do not match'
             return;
         }
 

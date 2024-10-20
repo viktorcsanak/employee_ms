@@ -185,12 +185,13 @@
                 <!-- HR Management Access Checkbox -->
                 <mat-checkbox formControlName="hrManagementAccess">HR Management Access</mat-checkbox>
             </div>
-            <!-- Submit Button -->
-            <button mat-raised-button type="submit" [disabled]="registerForm.invalid">Register</button>
     
             <!-- Error and Success Messages -->
             <div *ngIf="emailTakenError" style="color: red;">{{ emailTakenError }}</div>
             <div *ngIf="successMessage" style="color: green;">{{ successMessage }}</div>
+            
+            <!-- Submit Button -->
+            <button mat-raised-button type="submit" [disabled]="registerForm.invalid">Register</button>
         </form>
         </mat-card-content>
     </mat-card>
