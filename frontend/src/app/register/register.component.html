@@ -1,0 +1,198 @@
+<div class="registerToolbar">
+    <mat-toolbar>
+        <button mat-button color="primary" (click)="goToHome()">
+            Home
+        </button>
+
+        <div *ngIf="adminUser">
+            <div *ngIf="adminUser.adminPrivileges">
+                <button mat-button color="primary" (click)="goToAdmin()">
+                    User Administration
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="adminUser">
+            <div *ngIf="adminUser.hrManagementAccess">
+                <button mat-button color="primary" (click)="goToHR()">
+                    HR Management
+                </button>
+            </div>
+        </div>
+
+        <button mat-button color="warn" (click)="logout()">
+            Sign Out
+        </button>
+
+        <div *ngIf="adminUser">
+            <a>Welcome, {{ adminUser.firstName }} {{ adminUser.lastName }}! </a>
+        </div>
+    </mat-toolbar>
+</div>
+<div class="registerForm">
+    <mat-card>
+        <mat-card-title>Register New User</mat-card-title>
+        <mat-card-content>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- Email Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email">
+                    <mat-error *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                    <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+                    <span *ngIf="registerForm.get('email')?.errors?.['email']">Invalid email format.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Password Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" formControlName="password">
+                    <mat-error *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                        <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+                        <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters long.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Confirm Password Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput type="password" formControlName="confirmPassword">
+                    <mat-error *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+                    <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Confirm Password is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- First Name Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>First Name</mat-label>
+                    <input matInput type="text" formControlName="firstName">
+                    <mat-error *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+                        <span *ngIf="registerForm.get('firstName')?.errors?.['required']">First Name is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Middle Name Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Middle Name</mat-label>
+                    <input matInput type="text" formControlName="middleName">
+                </mat-form-field>
+            </div>
+    
+            <!-- Last Name Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput type="text" formControlName="lastName">
+                    <mat-error *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+                    <span *ngIf="registerForm.get('lastName')?.errors?.['required']">Last Name is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Date of Birth Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput type="date" formControlName="dateOfBirth">
+                    <mat-error *ngIf="registerForm.get('dateOfBirth')?.invalid && registerForm.get('dateOfBirth')?.touched">
+                        <span *ngIf="registerForm.get('dateOfBirth')?.errors?.['required']">Date of Birth is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Address Fields -->
+            <div formGroupName="placeOfResidence">
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>City</mat-label>
+                        <input matInput type="text" formControlName="city">
+                        <mat-error *ngIf="registerForm.get('placeOfResidence.city')?.invalid && registerForm.get('placeOfResidence.city')?.touched">
+                        <span *ngIf="registerForm.get('placeOfResidence.city')?.errors?.['required']">City is required.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Postal Code</mat-label>
+                        <input matInput type="text" formControlName="postalCode">
+                        <mat-error *ngIf="registerForm.get('placeOfResidence.postalCode')?.invalid && registerForm.get('placeOfResidence.postalCode')?.touched">
+                        <span *ngIf="registerForm.get('placeOfResidence.postalCode')?.errors?.['required']">Postal Code is required.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Address</mat-label>
+                        <input matInput type="text" formControlName="address">
+                        <mat-error *ngIf="registerForm.get('placeOfResidence.address')?.invalid && registerForm.get('placeOfResidence.address')?.touched">
+                        <span *ngIf="registerForm.get('placeOfResidence.address')?.errors?.['required']">Address is required.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+    
+            <!-- Position Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Position</mat-label>
+                    <input matInput type="text" formControlName="position">
+                    <mat-error *ngIf="registerForm.get('position')?.invalid && registerForm.get('position')?.touched">
+                        <span *ngIf="registerForm.get('position')?.errors?.['required']">Position is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Gender Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Gender</mat-label>
+                    <mat-select formControlName="gender">
+                            <mat-option value="male">Male</mat-option>
+                            <mat-option value="female">Female</mat-option>
+                            <mat-option value="other">Other</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched">
+                        <span *ngIf="registerForm.get('gender')?.errors?.['required']">Gender is required.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+    
+            <!-- Start of Employment Field -->
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Start of Employment</mat-label>
+                    <input matInput type="date" formControlName="startOfEmployment">
+                </mat-form-field>
+            </div>
+    
+            <div>
+                <!-- Admin Privileges Checkbox -->
+                <mat-checkbox formControlName="adminPrivileges">Admin Privileges</mat-checkbox>
+            </div>
+            <div>
+                <!-- HR Management Access Checkbox -->
+                <mat-checkbox formControlName="hrManagementAccess">HR Management Access</mat-checkbox>
+            </div>
+    
+            <!-- Error and Success Messages -->
+            <div *ngIf="emailTakenError" style="color: red;">{{ emailTakenError }}</div>
+            <div *ngIf="successMessage" style="color: green;">{{ successMessage }}</div>
+            
+            <!-- Submit Button -->
+            <button mat-raised-button type="submit" [disabled]="registerForm.invalid">Register</button>
+        </form>
+        </mat-card-content>
+    </mat-card>
+</div>

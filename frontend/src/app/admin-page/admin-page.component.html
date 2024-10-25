@@ -1,0 +1,107 @@
+<div>
+    <mat-toolbar>
+        <button mat-button color="primary" (click)="goToHome()">
+            Home
+        </button>
+
+        <div *ngIf="adminUser">
+            <div *ngIf="adminUser.hrManagementAccess">
+                <button mat-button color="primary" (click)="goToHR()">
+                    HR Management
+                </button>
+            </div>
+        </div>
+
+        <button mat-button color="warn" (click)="logout()">
+            Sign Out
+        </button>
+        
+        <div *ngIf="adminUser">
+            <a>Welcome, {{ adminUser.firstName }} {{ adminUser.lastName }}! </a>
+        </div>
+    </mat-toolbar>
+    
+    <mat-toolbar>
+        <mat-form-field appearance="fill">
+            <mat-label>Search Users</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Enter email or name">
+        </mat-form-field>
+        
+        <button mat-button (click)="onToggleHR()" [disabled]="!selection.hasValue()">
+            Grant/Revoke HR Privilege
+        </button>
+        <button mat-button (click)="onToggleAdmin()" [disabled]="!selection.hasValue()">
+            Grant/Revoke Admin Privilege
+        </button>
+        <button mat-button color="warn" (click)="onDeleteSelected()" [disabled]="!selection.hasValue()">
+            Delete
+        </button>
+        <button mat-button color="primary" routerLink="/register">
+            Add User
+        </button>
+    </mat-toolbar>
+    
+    <table mat-table [dataSource]="dataForAdmin" class="mat-elevation-z8" matSort>
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="isAllSelected()"
+                            [indeterminate]="isIndeterminate()">
+                </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? toggleSelection(row) : null"
+                            [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+    
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+            <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+        </ng-container>
+    
+        <!-- Full Name Column -->
+        <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> Full Name </th>
+            <td mat-cell *matCellDef="let user"> {{user.firstName}} {{user.middleName}} {{user.lastName}} </td>
+        </ng-container>
+    
+        <!-- Admin Column -->
+        <ng-container matColumnDef="admin">
+            <th mat-header-cell *matHeaderCellDef> Admin </th>
+            <td mat-cell *matCellDef="let user">
+                <mat-icon *ngIf="user.adminPrivileges" color="primary">check_circle</mat-icon>
+                <mat-icon *ngIf="!user.adminPrivileges" color="warn">cancel</mat-icon>
+                <!-- <mat-checkbox [(ngModel)]="user.adminPrivileges"></mat-checkbox> -->
+            </td>
+        </ng-container>
+    
+        <!-- HR Manager Column -->
+        <ng-container matColumnDef="hr">
+            <th mat-header-cell *matHeaderCellDef> HR Manager </th>
+            <td mat-cell *matCellDef="let user">
+                <mat-icon *ngIf="user.hrManagementAccess" color="primary">check_circle</mat-icon>
+                <mat-icon *ngIf="!user.hrManagementAccess" color="warn">cancel</mat-icon>
+                <!-- <mat-checkbox [(ngModel)]="user.hrManagementAccess"></mat-checkbox> -->
+            </td>
+        </ng-container>
+    
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let user">
+                <button mat-button (click)="onChangePassword(user)">Change Password</button>
+            </td>
+        </ng-container>
+    
+        <!-- Table Headers and Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="toggleSelection(row)"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
