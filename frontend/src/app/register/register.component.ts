@@ -138,6 +138,9 @@ export class RegisterComponent {
                 this.router.navigate(['/login']);
             },
             (error: any) => {
+                if ((error.status >= 400) && (error.status < 500)) {
+                    this.router.navigate(['/home']);
+                }
                 console.error('Logout failed', error);
             }
         );

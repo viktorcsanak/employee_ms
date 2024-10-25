@@ -2,14 +2,11 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Session = require('../models/LoginSessions')
+const checkSession = require('../middlewares/checkSession')
 
-router.post('/register', async (request, response) => {
+router.post('/register', checkSession, async (request, response) => {
     const token = request.cookies.token;
-
-    if (!token) {
-        console.log('Token is not found');
-        return response.status(401).json({ isAuthenticated: false, msg: 'Token not found'});
-    }
 
     try {
         const decoded = jwt.verify(token, 'kiskecske');
@@ -75,35 +72,45 @@ router.post('/login', async (request, response) => {
         if (!isMatch) {
             return response.status(401).json({ msg: 'Invalid credentials' });
         }
+
         const payload = { user: { id: user.id } };
-        jwt.sign(payload, 'kiskecske', { expiresIn: 3600 }, (error, token) => {
-            if (error) throw error;
-            response.cookie('token', token, {
-                httpOnly: true,
-                sameSite: 'Strict'
-            });
-            return response.status(200).json({ msg: 'Login successful' });
+
+        const token = jwt.sign(payload, 'kiskecske', { expiresIn: 3600 });
+
+        response.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'Strict'
         });
+        //TODO: Compare client IP and device info to check whether the user is already logged in on a device.
+        //TODO: When a request is received by the session middleware(TODO), check if the requesting and stored IPs match, to prevent tinkering by evesdroppers, in case they got a valid token
+        //TODO: Delete session entries when user is logged out or removed.
+        //TODO: Add midleware for looking for an active session when calling an API. If session with JWT is not found, instruct the browser to remove the cookie(expires: Date(0))
+        //TODO: Use angular router to navigate the browser to the login page in that case.
+        let session = new Session({
+            id: user.id,
+            token: token,
+        });
+        await session.save();
+
+        return response.status(200).json({ msg: 'Login successful' });
+            
     } catch (error) {
         console.error(error.message);
         return response.status(500).send('Internal Server Error');
     }
 });
 
-router.post('/logout', async (request, response) => {
+router.post('/logout', checkSession, async (request, response) => {
     try {
         const token = request.cookies.token;
-        
-        if (!token) {
-            console.log('Token is not found');
-            return response.status(404).json({ msg: 'No token was found'}); 
-        }
     
         response.cookie('token', token, {
             httpOnly: true,
             sameSite: 'Strict',
             expires: new Date(0),
         });
+
+        const session = await Session.deleteOne({ token }).exec();
 
         return response.status(200).json({ msg: 'Logout successful' });
     } catch (error) {
@@ -112,15 +119,10 @@ router.post('/logout', async (request, response) => {
     }
 });
 
-router.get('/verify-token', (request, response) => {
+router.get('/verify-token', checkSession, (request, response) => {
     try {
         const token = request.cookies.token;
         
-        if (!token) {
-            console.log('Token is not found');
-            return response.status(401).json({ isAuthenticated: false}); 
-        }
-    
         jwt.verify(token, 'kiskecske', (error, user) => {
             if (error) {
                 console.log('Token is invalid');
@@ -135,14 +137,9 @@ router.get('/verify-token', (request, response) => {
     }
 });
 
-router.get('/verify-admin', async (request, response) => {
+router.get('/verify-admin', checkSession, async (request, response) => {
     try {
         const token = request.cookies.token;
-        
-        if (!token) {
-            console.log('Token is not found');
-            return response.status(401).json({ isAuthenticated: false});
-        }
     
         const decoded = jwt.verify(token, 'kiskecske');
         const user = await User.findById(decoded.user.id);
@@ -161,14 +158,9 @@ router.get('/verify-admin', async (request, response) => {
     }
 });
 
-router.get('/verify-hr', async (request, response) => {
+router.get('/verify-hr', checkSession, async (request, response) => {
     try {
         const token = request.cookies.token;
-        
-        if (!token) {
-            console.log('Token is not found');
-            return response.status(401).json({ isAuthenticated: false});
-        }
     
         const decoded = jwt.verify(token, 'kiskecske');
         const user = await User.findById(decoded.user.id);

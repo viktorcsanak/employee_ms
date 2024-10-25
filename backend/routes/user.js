@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Session = require('../models/LoginSessions')
+const checkSession = require('../middlewares/checkSession')
 
-router.get('/', async (request, response) => {
+router.get('/', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -43,7 +45,7 @@ router.get('/', async (request, response) => {
     }
 });
 
-router.get('/management/:privilege', async (request, response) => {
+router.get('/management/:privilege', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -110,7 +112,7 @@ router.get('/management/:privilege', async (request, response) => {
     }
 });
 
-router.put('/management/:id', async (request, response) => {
+router.put('/management/:id', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -149,7 +151,7 @@ router.put('/management/:id', async (request, response) => {
     }
 });
 
-router.delete('/management/:id', async (request, response) => {
+router.delete('/management/:id', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
@@ -166,6 +168,8 @@ router.delete('/management/:id', async (request, response) => {
         }
 
         const users = await User.findByIdAndDelete(request.params.id).exec();
+        const id = request.params.id;
+        await Session.deleteMany({id});
 
         return response.status(200).json({ msg: 'User was removed' });
     } catch (error) {

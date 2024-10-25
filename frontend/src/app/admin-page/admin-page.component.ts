@@ -222,9 +222,12 @@ export class AdminPageComponent {
         this.http.post('/api/auth/logout', {}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
-                this.router.navigate(['/login']);
+                this.router.navigate(['/home']);
             },
             (error: any) => {
+                if ((error.status >= 400) && (error.status < 500)) {
+                    this.router.navigate(['/home']);
+                }
                 console.error('Logout failed', error);
             }
         );

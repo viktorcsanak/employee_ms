@@ -1,5 +1,6 @@
 const mongodb = require('mongoose');
 const User = require('./models/User')
+const Session = require('./models/LoginSessions')
 const bcrypt = require('bcryptjs');
 
 async function seedUsers() {
@@ -116,6 +117,7 @@ async function seedUsers() {
         }
 
         await User.deleteMany();
+        await Session.deleteMany();
         await User.insertMany(users);
         console.log('Users seeded successfully!');
         mongodb.connection.close();        
