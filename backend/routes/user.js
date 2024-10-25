@@ -4,12 +4,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Session = require('../models/LoginSessions')
 const checkSession = require('../middlewares/checkSession')
+const dotenv = require('dotenv').config();
 
 router.get('/', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
 
         const user = await User.findById(decoded.user.id).exec();
         if (!user) {
@@ -49,7 +50,7 @@ router.get('/management/:privilege', checkSession, async (request, response) => 
     const token = request.cookies.token;
 
     try {
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
 
         const user = await User.findById(decoded.user.id).exec();
         if (!user) {
@@ -116,7 +117,7 @@ router.put('/management/:id', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
 
         const user = await User.findById(decoded.user.id).exec();
         if (!user) {
@@ -155,7 +156,7 @@ router.delete('/management/:id', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
 
         const user = await User.findById(decoded.user.id).exec();
         if (!user) {

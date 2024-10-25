@@ -4,12 +4,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Session = require('../models/LoginSessions')
 const checkSession = require('../middlewares/checkSession')
+const dotenv = require('dotenv').config();
 
 router.post('/register', checkSession, async (request, response) => {
     const token = request.cookies.token;
 
     try {
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
         const user = await User.findById(decoded.user.id);
 
         if (!user.adminPrivileges) {
@@ -75,7 +76,7 @@ router.post('/login', async (request, response) => {
 
         const payload = { user: { id: user.id } };
 
-        const token = jwt.sign(payload, 'kiskecske', { expiresIn: 3600 });
+        const token = jwt.sign(payload, `${dotenv.parsed.JWT_SECRET}`, { expiresIn: 3600 });
 
         response.cookie('token', token, {
             httpOnly: true,
@@ -122,8 +123,8 @@ router.post('/logout', checkSession, async (request, response) => {
 router.get('/verify-token', checkSession, (request, response) => {
     try {
         const token = request.cookies.token;
-        
-        jwt.verify(token, 'kiskecske', (error, user) => {
+
+        jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`, (error, user) => {
             if (error) {
                 console.log('Token is invalid');
                 return response.status(401).json({ isAuthenticated: false });
@@ -141,7 +142,7 @@ router.get('/verify-admin', checkSession, async (request, response) => {
     try {
         const token = request.cookies.token;
     
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
         const user = await User.findById(decoded.user.id);
 
         if (!user.adminPrivileges) {
@@ -162,7 +163,7 @@ router.get('/verify-hr', checkSession, async (request, response) => {
     try {
         const token = request.cookies.token;
     
-        const decoded = jwt.verify(token, 'kiskecske');
+        const decoded = jwt.verify(token, `${dotenv.parsed.JWT_SECRET}`);
         const user = await User.findById(decoded.user.id);
 
         if (!user.hrManagementAccess) {
