@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 interface UserData {
     email: string;
@@ -81,7 +82,8 @@ export class HomePageComponent {
     }
 
     fetchUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        const url = `${environment.serverUrl}:${environment.serverPort}/api/user`;
+        return this.http.get<UserData>(url, {withCredentials: true}).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -91,7 +93,8 @@ export class HomePageComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        const url = `${environment.serverUrl}:${environment.serverPort}/api/auth/logout`;
+        this.http.post(url, {}, {withCredentials: true}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
                 this.router.navigate(['/login']);

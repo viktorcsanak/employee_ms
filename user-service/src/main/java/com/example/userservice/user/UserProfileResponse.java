@@ -1,0 +1,18 @@
+package com.example.userservice.user;
+
+public record UserProfileResponse(
+    String email,
+    String firstName,
+    String middleName,
+    String lastName,
+    String dateOfBirth,
+    String gender,
+
+    ResidenceResponse placeOfResidence,
+
+    String position,
+    String startOfEmployment,
+
+    boolean adminPrivileges,
+    boolean hrManagementAccess
+) {}
