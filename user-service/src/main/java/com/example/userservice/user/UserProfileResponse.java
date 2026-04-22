@@ -7,12 +7,8 @@ public record UserProfileResponse(
     String lastName,
     String dateOfBirth,
     String gender,
-
     ResidenceResponse placeOfResidence,
-
     String position,
     String startOfEmployment,
-
     boolean adminPrivileges,
-    boolean hrManagementAccess
-) {}
+    boolean hrManagementAccess) {}

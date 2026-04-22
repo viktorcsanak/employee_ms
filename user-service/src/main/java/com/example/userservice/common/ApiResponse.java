@@ -1,7 +1,11 @@
 package com.example.userservice.common;
 
-import lombok.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
@@ -10,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Getter
 @Setter
 public class ApiResponse {
-    private String message;
-    private String errorMessage;
-    private Boolean isAuthenticated;
+  private String message;
+  private String errorMessage;
+  private Boolean isAuthenticated;
 }

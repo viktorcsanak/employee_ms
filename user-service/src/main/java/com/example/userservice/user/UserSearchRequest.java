@@ -4,8 +4,4 @@ import lombok.Builder;
 
 @Builder
 public record UserSearchRequest(
-    String firstName,
-    String lastName,
-    String dateOfBirth,
-    String email
-) {}
+    String firstName, String lastName, String dateOfBirth, String email) {}
