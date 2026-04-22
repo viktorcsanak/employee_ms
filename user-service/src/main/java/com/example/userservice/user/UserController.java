@@ -42,11 +42,12 @@ public class UserController {
         return userService.register(request);
     }
 
-    @GetMapping
-    public UserProfileResponse getUser(@CookieValue(name="token") String token) {
-        Integer id = jwtService.verifyToken(token);
-        return userService.getUserProfile(id);
-    }
+  @GetMapping
+  @PreAuthorize("hasRole('BASIC')")
+  public UserProfileResponse getUser(@CookieValue(name = "token") String token) {
+    Integer id = jwtService.verifyToken(token);
+    return userService.getUserProfile(id);
+  }
 
     @PutMapping("/{id}")
     public void updateUser(@PathVariable Integer id, @RequestBody UserUpdateRequest update) {

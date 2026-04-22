@@ -80,6 +80,18 @@ public class AuthController {
         return ResponseEntity.ok().body(ApiResponse.builder().isAuthenticated(true).build());
     }
 
+  @GetMapping("/verify-admin")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse> verifyAdminRole() {
+    return ResponseEntity.ok().body(ApiResponse.builder().isAuthenticated(true).build());
+  }
+
+  @GetMapping("/verify-hr")
+  @PreAuthorize("hasRole('HR')")
+  public ResponseEntity<ApiResponse> verifyHrRole() {
+    return ResponseEntity.ok().body(ApiResponse.builder().isAuthenticated(true).build());
+  }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserExistsException.class)
     public ResponseEntity<ApiResponse> handleException(UserExistsException ex) {

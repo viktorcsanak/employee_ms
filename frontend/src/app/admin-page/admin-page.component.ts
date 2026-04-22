@@ -8,6 +8,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 interface UserData {
     __id: any,
@@ -70,7 +71,8 @@ export class AdminPageComponent {
     }
     
     fetchUserData(): Observable<UserData[]> {
-        return this.http.get<UserData>('/api/user/management/admin').pipe(
+        const url = `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin`;
+        return this.http.get<UserData>(url, {withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -80,7 +82,8 @@ export class AdminPageComponent {
     }
 
     fetchCurrentUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        const url = `${environment.serverUrl}:${environment.serverPort}/api/user`;
+        return this.http.get<UserData>(url, {withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
