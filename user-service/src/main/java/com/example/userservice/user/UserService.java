@@ -64,7 +64,6 @@ public class UserService {
   }
 
   public UserProfileResponse getUserProfile(Integer id) {
-
     final User user = getUserById(id);
 
     return new UserProfileResponse(
@@ -82,6 +81,21 @@ public class UserService {
         user.getStartOfEmployment() != null ? user.getStartOfEmployment().toString() : null,
         user.getRoles().contains(Role.ADMIN),
         user.getRoles().contains(Role.HR));
+  }
+
+  public List<AdminUserResponse> getAllUsersForAdmin() {
+    return repo.findAll().stream()
+        .map(
+            user ->
+                new AdminUserResponse(
+                    user.getId(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getMiddleName(),
+                    user.getLastName(),
+                    user.getRoles().contains(Role.ADMIN),
+                    user.getRoles().contains(Role.HR)))
+        .toList();
   }
 
   public void deleteUser(Integer id) {

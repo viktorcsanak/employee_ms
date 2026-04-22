@@ -5,6 +5,7 @@ import com.example.userservice.auth.RegisterRequest;
 import com.example.userservice.common.ApiResponse;
 import io.jsonwebtoken.JwtException;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,12 @@ public class UserController {
   public UserProfileResponse getUser(@CookieValue(name = "token") String token) {
     final Integer id = jwtService.verifyToken(token);
     return userService.getUserProfile(id);
+  }
+
+  @GetMapping("/management/admin")
+  @PreAuthorize("hasRole('ADMIN')")
+  public List<AdminUserResponse> getAllUsersForAdmin(@CookieValue(name = "token") String token) {
+    return userService.getAllUsersForAdmin();
   }
 
   @PutMapping("/{id}")

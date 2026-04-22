@@ -45,11 +45,7 @@ export class AdminPageComponent {
         this.fetchUserData().subscribe({
             next: (data) => {
                 console.log('data fetched', data);
-                this.dataForAdmin = new MatTableDataSource(data);
-                setTimeout (() => {
-                    this.dataForAdmin.paginator = this.paginator;
-                    this.dataForAdmin.sort = this.sort;
-                });
+                this.dataForAdmin.data = data;
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error fetching user data', error);
@@ -68,6 +64,11 @@ export class AdminPageComponent {
                 this.errorMessage = 'Failed to load user data. Please try again later.';
             }
         });   
+    }
+
+    ngAfterViewInit(): void {
+        this.dataForAdmin.paginator = this.paginator;
+        this.dataForAdmin.sort = this.sort;
     }
     
     fetchUserData(): Observable<UserData[]> {
