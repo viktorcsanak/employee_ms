@@ -1,10 +1,6 @@
 package com.example.userservice.auth;
 
-import com.example.userservice.common.ApiResponse;
-import com.example.userservice.user.User;
-import com.example.userservice.user.UserExistsException;
-import com.example.userservice.user.UserNotFoundException;
-import io.jsonwebtoken.JwtException;
+import com.example.userservice.common.api.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,12 +8,10 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,12 +32,10 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest) {
-    final User user = authService.login(loginRequest);
-
-    final Session session = sessionService.createSession(user);
+    final String token = authService.login(loginRequest);
 
     final ResponseCookie cookie =
-        ResponseCookie.from("token", session.getToken())
+        ResponseCookie.from("token", token)
             .httpOnly(true)
             .secure(false) // true in HTTPS production
             .path("/")
@@ -101,33 +93,5 @@ public class AuthController {
   @PreAuthorize("hasRole('HR')")
   public ResponseEntity<ApiResponse> verifyHrRole() {
     return ResponseEntity.ok().body(ApiResponse.builder().isAuthenticated(true).build());
-  }
-
-  @ResponseStatus(HttpStatus.CONFLICT)
-  @ExceptionHandler(UserExistsException.class)
-  public ResponseEntity<ApiResponse> handleException(UserExistsException ex) {
-    return ResponseEntity.status(HttpStatus.CONFLICT)
-        .body(ApiResponse.builder().errorMessage(ex.getMessage()).build());
-  }
-
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ApiResponse> handleException(UserNotFoundException ex) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(ApiResponse.builder().errorMessage(ex.getMessage()).build());
-  }
-
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<ApiResponse> handleException(IllegalArgumentException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiResponse.builder().errorMessage("Invalid request").build());
-  }
-
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  @ExceptionHandler(JwtException.class)
-  public ResponseEntity<ApiResponse> handleException(JwtException ex) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(ApiResponse.builder().errorMessage(ex.getMessage()).build());
   }
 }

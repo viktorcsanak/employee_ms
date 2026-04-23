@@ -1,4 +1,4 @@
-package com.example.userservice.common;
+package com.example.userservice.common.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

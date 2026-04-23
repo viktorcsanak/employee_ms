@@ -1,4 +1,4 @@
-package com.example.userservice.user;
+package com.example.userservice.common.exception;
 
 public class UserExistsException extends RuntimeException {
   public UserExistsException(String message) {

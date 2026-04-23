@@ -1,5 +1,6 @@
 package com.example.userservice.auth;
 
+import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.user.User;
 import java.util.Set;
