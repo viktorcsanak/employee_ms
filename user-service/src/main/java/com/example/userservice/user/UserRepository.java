@@ -1,5 +1,6 @@
 package com.example.userservice.user;
 
+import com.example.userservice.user.model.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

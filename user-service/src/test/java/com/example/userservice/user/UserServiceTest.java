@@ -8,10 +8,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.userservice.auth.RegisterRequest;
+import com.example.userservice.auth.dto.RegisterRequest;
 import com.example.userservice.common.exception.UserExistsException;
 import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.permissions.Role;
+import com.example.userservice.user.model.User;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

@@ -3,10 +3,13 @@ package com.example.userservice.auth;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.example.userservice.auth.dto.LoginRequest;
 import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
-import com.example.userservice.user.User;
+import com.example.userservice.session.Session;
+import com.example.userservice.session.SessionService;
 import com.example.userservice.user.UserRepository;
+import com.example.userservice.user.model.User;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

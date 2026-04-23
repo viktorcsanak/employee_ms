@@ -1,8 +1,9 @@
-package com.example.userservice.user;
+package com.example.userservice.user.model;
 
-import com.example.userservice.auth.Session;
 import com.example.userservice.permissions.Role;
-import com.example.userservice.residence.PlaceOfResidence;
+import com.example.userservice.session.Session;
+import com.example.userservice.user.residence.PlaceOfResidence;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

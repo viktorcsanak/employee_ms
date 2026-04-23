@@ -1,10 +1,16 @@
 package com.example.userservice.user;
 
-import com.example.userservice.auth.RegisterRequest;
+import com.example.userservice.auth.dto.RegisterRequest;
 import com.example.userservice.common.exception.UserExistsException;
 import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.permissions.Role;
-import com.example.userservice.residence.PlaceOfResidence;
+import com.example.userservice.user.dto.AdminUserResponse;
+import com.example.userservice.user.dto.ResidenceResponse;
+import com.example.userservice.user.dto.UserProfileResponse;
+import com.example.userservice.user.dto.UserSearchRequest;
+import com.example.userservice.user.dto.UserUpdateRequest;
+import com.example.userservice.user.model.User;
+import com.example.userservice.user.residence.PlaceOfResidence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

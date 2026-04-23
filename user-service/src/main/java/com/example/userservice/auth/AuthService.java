@@ -1,9 +1,11 @@
 package com.example.userservice.auth;
 
+import com.example.userservice.auth.dto.LoginRequest;
 import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
-import com.example.userservice.user.User;
+import com.example.userservice.session.SessionService;
 import com.example.userservice.user.UserRepository;
+import com.example.userservice.user.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

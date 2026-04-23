@@ -1,5 +1,6 @@
 package com.example.userservice.auth;
 
+import com.example.userservice.auth.dto.LoginRequest;
 import com.example.userservice.common.api.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +20,9 @@ public class AuthController {
   private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
   private final AuthService authService;
-  private final JwtService jwtService;
-  private final SessionService sessionService;
 
-  public AuthController(
-      AuthService authService, JwtService jwtService, SessionService sessionService) {
+  public AuthController(AuthService authService) {
     this.authService = authService;
-    this.jwtService = jwtService;
-    this.sessionService = sessionService;
   }
 
   @PostMapping("/login")

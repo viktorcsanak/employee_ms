@@ -1,4 +1,4 @@
-package com.example.userservice.user;
+package com.example.userservice.user.dto;
 
 public record UserProfileResponse(
     String email,

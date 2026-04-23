@@ -3,7 +3,9 @@ package com.example.userservice.auth;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.example.userservice.config.security.JwtSessionFilter;
 import com.example.userservice.permissions.Role;
+import com.example.userservice.session.SessionService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

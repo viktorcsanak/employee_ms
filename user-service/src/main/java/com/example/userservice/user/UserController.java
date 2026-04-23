@@ -1,7 +1,11 @@
 package com.example.userservice.user;
 
 import com.example.userservice.auth.JwtService;
-import com.example.userservice.auth.RegisterRequest;
+import com.example.userservice.auth.dto.RegisterRequest;
+import com.example.userservice.user.dto.AdminUserResponse;
+import com.example.userservice.user.dto.UserProfileResponse;
+import com.example.userservice.user.dto.UserUpdateRequest;
+import com.example.userservice.user.model.User;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

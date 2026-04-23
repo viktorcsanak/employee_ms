@@ -1,9 +1,11 @@
-package com.example.userservice.auth;
+package com.example.userservice.session;
 
+import com.example.userservice.auth.JwtService;
 import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
 import com.example.userservice.permissions.Role;
-import com.example.userservice.user.User;
+import com.example.userservice.user.model.User;
+
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,10 @@
 package com.example.userservice.config;
 
 import com.example.userservice.permissions.Role;
-import com.example.userservice.residence.PlaceOfResidence;
-import com.example.userservice.residence.PlaceOfResidenceRepository;
-import com.example.userservice.user.User;
 import com.example.userservice.user.UserRepository;
+import com.example.userservice.user.model.User;
+import com.example.userservice.user.residence.PlaceOfResidence;
+import com.example.userservice.user.residence.PlaceOfResidenceRepository;
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.Set;

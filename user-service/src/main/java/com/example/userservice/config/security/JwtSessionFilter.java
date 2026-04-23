@@ -1,5 +1,6 @@
-package com.example.userservice.auth;
+package com.example.userservice.config.security;
 
+import com.example.userservice.session.SessionService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

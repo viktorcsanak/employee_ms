@@ -2,6 +2,7 @@ package com.example.userservice.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.example.userservice.user.model.User;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

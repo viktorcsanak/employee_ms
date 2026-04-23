@@ -1,4 +1,4 @@
-package com.example.userservice.auth;
+package com.example.userservice.auth.dto;
 
 import com.example.userservice.permissions.Role;
 import java.time.LocalDate;

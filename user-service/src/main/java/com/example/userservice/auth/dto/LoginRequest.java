@@ -1,4 +1,4 @@
-package com.example.userservice.auth;
+package com.example.userservice.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
