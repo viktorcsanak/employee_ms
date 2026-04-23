@@ -56,10 +56,7 @@ public class JwtSessionFilter extends OncePerRequestFilter {
     }
 
     try {
-      if (!sessionService.isValid(token)) {
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Session closed");
-        return;
-      }
+      sessionService.verifySession(token);
 
       final Integer userId = sessionService.getSessionUserId(token);
 
