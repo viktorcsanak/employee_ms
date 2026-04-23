@@ -1,6 +1,7 @@
 package com.example.userservice.auth;
 
 import com.example.userservice.common.exception.SessionNotFoundException;
+import com.example.userservice.common.exception.UserUnauthorizedException;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.user.User;
 import java.util.Set;
@@ -39,8 +40,10 @@ public class SessionService {
             });
   }
 
-  public boolean isValid(String token) {
-    return sessionRepository.findByTokenAndActiveTrue(token).isPresent();
+  public void verifySession(String token) {
+    if (!sessionRepository.findByTokenAndActiveTrue(token).isPresent()) {
+      throw new UserUnauthorizedException("Invalid token");
+    }
   }
 
   public Integer getSessionUserId(String token) {

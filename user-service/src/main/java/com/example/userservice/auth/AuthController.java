@@ -3,7 +3,6 @@ package com.example.userservice.auth;
 import com.example.userservice.common.api.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,9 +50,10 @@ public class AuthController {
   @PostMapping("/logout")
   public ResponseEntity<ApiResponse> logout(
       @CookieValue(name = "token", required = false) String token) {
-
-    if (token != null) {
-      sessionService.invalidateSession(token);
+    try {
+      authService.logout(token);
+    } catch (Exception exception) {
+      log.warn("Logout failed for token {}", token);
     }
 
     final ResponseCookie expiredCookie =
@@ -73,12 +73,8 @@ public class AuthController {
   @GetMapping("/verify-token")
   public ResponseEntity<ApiResponse> verifyToken(
       @CookieValue(name = "token", required = false) String token) {
-    if (token == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(ApiResponse.builder().errorMessage("Missing token").build());
-    }
 
-    jwtService.verifyToken(token);
+    authService.verifyToken(token);
 
     return ResponseEntity.ok().body(ApiResponse.builder().isAuthenticated(true).build());
   }

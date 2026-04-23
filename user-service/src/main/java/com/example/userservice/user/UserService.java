@@ -1,6 +1,8 @@
 package com.example.userservice.user;
 
 import com.example.userservice.auth.RegisterRequest;
+import com.example.userservice.common.exception.UserExistsException;
+import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.residence.PlaceOfResidence;
 import java.time.LocalDate;
