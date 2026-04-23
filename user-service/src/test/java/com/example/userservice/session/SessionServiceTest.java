@@ -7,7 +7,6 @@ import com.example.userservice.auth.JwtService;
 import com.example.userservice.common.exception.UserUnauthorizedException;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.user.model.User;
-
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,5 @@
 package com.example.userservice.user;
 
-import com.example.userservice.auth.dto.RegisterRequest;
 import com.example.userservice.common.exception.UserExistsException;
 import com.example.userservice.common.exception.UserNotFoundException;
 import com.example.userservice.permissions.Role;
@@ -10,60 +9,26 @@ import com.example.userservice.user.dto.UserProfileResponse;
 import com.example.userservice.user.dto.UserSearchRequest;
 import com.example.userservice.user.dto.UserUpdateRequest;
 import com.example.userservice.user.model.User;
-import com.example.userservice.user.residence.PlaceOfResidence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
   private final UserRepository repo;
-  private final PasswordEncoder passwordEncoder;
 
   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-  public UserService(UserRepository repo, PasswordEncoder passwordEncoder) {
+  public UserService(UserRepository repo) {
     this.repo = repo;
-    this.passwordEncoder = passwordEncoder;
   }
 
-  public User register(RegisterRequest request) {
-
-    if (repo.findByEmail(request.email()).isPresent()) {
+  public User register(User user) {
+    if (repo.findByEmail(user.getEmail()).isPresent()) {
       throw new UserExistsException("User already exists");
     }
-
-    final PlaceOfResidence residence =
-        repo.findAll().stream()
-            .map(User::getPlaceOfResidence)
-            .filter(
-                r ->
-                    r.getCity().equals(request.city())
-                        && r.getPostalCode().equals(request.postalCode()))
-            .findFirst()
-            .orElseGet(
-                () ->
-                    PlaceOfResidence.builder()
-                        .city(request.city())
-                        .postalCode(request.postalCode())
-                        .build());
-
-    final User user =
-        User.builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
-            .email(request.email())
-            .password(passwordEncoder.encode(request.password()))
-            .dateOfBirth(request.dateOfBirth())
-            .address(request.address())
-            .placeOfResidence(residence)
-            .roles(request.roles() == null ? Set.of(Role.BASIC) : request.roles())
-            .build();
-
     return repo.save(user);
   }
 

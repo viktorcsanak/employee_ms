@@ -3,7 +3,6 @@ package com.example.userservice.user.model;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.session.Session;
 import com.example.userservice.user.residence.PlaceOfResidence;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

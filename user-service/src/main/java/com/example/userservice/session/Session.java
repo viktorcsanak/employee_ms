@@ -1,7 +1,6 @@
 package com.example.userservice.session;
 
 import com.example.userservice.user.model.User;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
