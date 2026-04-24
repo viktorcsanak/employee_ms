@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 interface UserData {
-    __id: any,
+    id: any,
     email: string;
     firstName: string;
     middleName: string;
@@ -142,7 +142,11 @@ export class AdminPageComponent {
     }
     
     saveChanges(user: UserData): void {
-        this.http.put(`/api/user/management/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe().subscribe({
+        this.http.put(
+            `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/permissions/${user.id}`,
+            { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess },
+            { withCredentials: true }
+        ).pipe().subscribe({
             next: (data) => {
                 console.log('User updated successfully');
             },
@@ -167,7 +171,10 @@ export class AdminPageComponent {
                 return;
             }
 
-            this.http.put(`/api/user/management/${user.__id}`, { password: newPassword}).pipe().subscribe({
+            this.http.put(
+                `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/password/${user.id}`,
+                { password: newPassword }, { withCredentials: true }
+            ).pipe().subscribe({
                 next: (data) => {
                     console.log('User updated successfully');
                 },
@@ -182,10 +189,13 @@ export class AdminPageComponent {
     }
 
     removeUser(user: UserData): void {
-        this.http.delete(`/api/user/management/${user.__id}`).pipe().subscribe({
+        this.http.delete(
+            `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/delete/${user.id}`,
+            { withCredentials: true }
+        ).pipe().subscribe({
             next: (data) => {
                 console.log('User removed successfully');
-                this.dataForAdmin.data = this.dataForAdmin.data.filter(u => u.__id !== user.__id);
+                this.dataForAdmin.data = this.dataForAdmin.data.filter(u => u.id !== user.id);
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error removing user', error);
@@ -223,9 +233,12 @@ export class AdminPageComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        this.http.post(
+            `${environment.serverUrl}:${environment.serverPort}/api/auth/logout`,
+            {}, {withCredentials: true}
+        ).subscribe(
             (response: any) => {
-                console.log(response.msg); // Log out successful
+                console.log(response.msg);
                 this.router.navigate(['/home']);
             },
             (error: any) => {
