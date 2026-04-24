@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserQueryService {
-
   private final UserRepository repo;
 
   public UserQueryService(UserRepository repo) {

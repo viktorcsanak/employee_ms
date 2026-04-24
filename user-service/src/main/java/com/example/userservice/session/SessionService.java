@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SessionService {
-
   private final SessionRepository sessionRepository;
   private final JwtService jwtService;
 
@@ -37,8 +36,13 @@ public class SessionService {
         .ifPresent(
             session -> {
               session.setActive(false);
-              sessionRepository.save(session);
+              sessionRepository.saveAndFlush(session);
             });
+  }
+
+  @Transactional
+  public void invalidateAllUserSessions(Integer id) {
+    sessionRepository.deleteAllByUserId(id);
   }
 
   public void verifySession(String token) {

@@ -71,13 +71,6 @@ public class UserService {
         .toList();
   }
 
-  public void deleteUser(Integer id) {
-    if (!repo.existsById(id)) {
-      throw new UserNotFoundException("User not found: " + id);
-    }
-    repo.deleteById(id);
-  }
-
   public User updateUser(Integer id, UserUpdateRequest request) {
     final User user = getUserById(id);
 
