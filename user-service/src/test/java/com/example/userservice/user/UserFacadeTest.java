@@ -1,10 +1,17 @@
 package com.example.userservice.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.example.userservice.auth.JwtService;
-import com.example.userservice.user.dto.*;
+import com.example.userservice.user.dto.AdminUserResponse;
+import com.example.userservice.user.dto.HrUserResponse;
+import com.example.userservice.user.dto.PasswordChangeRequest;
+import com.example.userservice.user.dto.PermissionChangeRequest;
+import com.example.userservice.user.dto.RegisterRequest;
+import com.example.userservice.user.dto.UserProfileResponse;
 import com.example.userservice.user.model.User;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -77,5 +84,23 @@ class UserFacadeTest {
     verify(adminService).grantOrRevokePermissions(1, p);
     verify(adminService).changePassword(1, pw);
     verify(adminService).deleteUser(1);
+  }
+
+  @Test
+  void getAllUsersForHr_mapsUsers() {
+    User user = new User();
+
+    when(queryService.search(null)).thenReturn(List.of(user));
+
+    HrUserResponse dto = mock(HrUserResponse.class);
+    when(mapper.toHr(user)).thenReturn(dto);
+
+    List<HrUserResponse> result = facade.getAllUsersForHr();
+
+    assertEquals(1, result.size());
+    assertEquals(dto, result.get(0));
+
+    verify(queryService).search(null);
+    verify(mapper).toHr(user);
   }
 }

@@ -1,5 +1,7 @@
 package com.example.userservice.user;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -123,5 +125,14 @@ class UserControllerTest {
     mockMvc.perform(delete("/api/user/management/admin/delete/1")).andExpect(status().isOk());
 
     verify(userFacade).deleteUser(1);
+  }
+
+  @Test
+  void getAllUsers_hr_success() throws Exception {
+    when(userFacade.getAllUsersForHr()).thenReturn(List.of());
+
+    mockMvc.perform(get("/api/user/management/hr")).andExpect(status().isOk());
+
+    verify(userFacade).getAllUsersForHr();
   }
 }
