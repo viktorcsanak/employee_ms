@@ -68,7 +68,7 @@
                 [@detailExpand]="expandedElement === element ? 'expanded' : 'collapsed'">
                 <div class="element-position"><strong>Position:</strong> {{element.position}}</div>
                 <div class="element-dateOfEmployment"><strong>Start of employment:</strong> {{element.startOfEmployment | date}}</div>
-                <div class="element-residence"><strong>Location:</strong> {{element.placeOfResidence.address}}, 
+                <div class="element-residence"><strong>Location:</strong> {{element.address}}, 
                     {{element.placeOfResidence.city}} ({{element.placeOfResidence.postalCode}})
                 </div>
                 <div class="element-gender"><strong>Gender:</strong> {{element.gender}}</div>
@@ -87,5 +87,5 @@
             [@detailExpand]="expandedElement === element ? 'expanded' : 'collapsed'">
         </tr>  
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons></mat-paginator>
 </div>

@@ -1,6 +1,7 @@
 package com.example.userservice.user;
 
 import com.example.userservice.user.dto.AdminUserResponse;
+import com.example.userservice.user.dto.HrUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
 import com.example.userservice.user.dto.PermissionChangeRequest;
 import com.example.userservice.user.dto.RegisterRequest;
@@ -68,5 +69,11 @@ public class UserController {
   @PreAuthorize("hasRole('ADMIN')")
   public void removeUser(@PathVariable @NotNull Integer id) {
     userFacade.deleteUser(id);
+  }
+
+  @GetMapping("/management/hr")
+  @PreAuthorize("hasRole('HR')")
+  public List<HrUserResponse> getAllUsersForHR() {
+    return userFacade.getAllUsersForHr();
   }
 }

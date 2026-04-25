@@ -2,6 +2,7 @@ package com.example.userservice.user;
 
 import com.example.userservice.auth.JwtService;
 import com.example.userservice.user.dto.AdminUserResponse;
+import com.example.userservice.user.dto.HrUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
 import com.example.userservice.user.dto.PermissionChangeRequest;
 import com.example.userservice.user.dto.RegisterRequest;
@@ -50,6 +51,10 @@ public class UserFacade {
 
   public List<AdminUserResponse> getAllUsersForAdmin() {
     return queryService.search(null).stream().map(mapper::toAdmin).toList();
+  }
+
+  public List<HrUserResponse> getAllUsersForHr() {
+    return queryService.search(null).stream().map(mapper::toHr).toList();
   }
 
   public void grantOrRevokePermissions(Integer id, PermissionChangeRequest request) {
