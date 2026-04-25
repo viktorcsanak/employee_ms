@@ -20,5 +20,5 @@ public record RegisterRequest(
     @NotNull PlaceOfResidence placeOfResidence,
     @NotBlank String address,
     @NotBlank String position,
-    @NotNull boolean adminPrivileges,
-    @NotNull boolean hrManagementAccess) {}
+    @NotNull Boolean adminPrivileges,
+    @NotNull Boolean hrManagementAccess) {}

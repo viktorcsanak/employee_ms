@@ -2,6 +2,7 @@ package com.example.userservice.auth;
 
 import com.example.userservice.auth.dto.LoginRequest;
 import com.example.userservice.common.api.ApiResponse;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseCookie;
@@ -26,7 +27,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
     final String token = authService.login(loginRequest);
 
     final ResponseCookie cookie =

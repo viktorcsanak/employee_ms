@@ -14,6 +14,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -98,7 +99,14 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiResponse.builder().errorMessage("Invalid or missing form data").build());
+        .body(ApiResponse.builder().errorMessage("Invalid or missing data").build());
+  }
+
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  public ResponseEntity<ApiResponse> handelHandlerMethodValidationException(
+      HandlerMethodValidationException ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiResponse.builder().errorMessage("Invalid or missing data").build());
   }
 
   @ExceptionHandler(DataAccessException.class)

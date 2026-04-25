@@ -10,5 +10,5 @@ public record UserProfileResponse(
     ResidenceResponse placeOfResidence,
     String position,
     String startOfEmployment,
-    boolean adminPrivileges,
-    boolean hrManagementAccess) {}
+    Boolean adminPrivileges,
+    Boolean hrManagementAccess) {}

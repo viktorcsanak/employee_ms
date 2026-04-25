@@ -6,5 +6,5 @@ public record AdminUserResponse(
     String firstName,
     String middleName,
     String lastName,
-    boolean adminPrivileges,
-    boolean hrManagementAccess) {}
+    Boolean adminPrivileges,
+    Boolean hrManagementAccess) {}

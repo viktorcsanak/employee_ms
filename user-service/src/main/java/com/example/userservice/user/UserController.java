@@ -5,6 +5,8 @@ import com.example.userservice.user.dto.PasswordChangeRequest;
 import com.example.userservice.user.dto.PermissionChangeRequest;
 import com.example.userservice.user.dto.RegisterRequest;
 import com.example.userservice.user.dto.UserProfileResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,7 @@ public class UserController {
 
   @PostMapping("/management/admin/register")
   @PreAuthorize("hasRole('ADMIN')")
-  public void register(@RequestBody RegisterRequest request) {
+  public void register(@Valid @RequestBody RegisterRequest request) {
     userFacade.register(request);
   }
 
@@ -51,19 +53,20 @@ public class UserController {
   @PutMapping("management/admin/permissions/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public void grantOrRevokePermissions(
-      @PathVariable Integer id, @RequestBody PermissionChangeRequest request) {
+      @PathVariable @NotNull Integer id, @Valid @RequestBody PermissionChangeRequest request) {
     userFacade.grantOrRevokePermissions(id, request);
   }
 
   @PutMapping("management/admin/password/{id}")
   @PreAuthorize("hasRole('ADMIN')")
-  public void changePassword(@PathVariable Integer id, @RequestBody PasswordChangeRequest request) {
+  public void changePassword(
+      @PathVariable @NotNull Integer id, @Valid @RequestBody PasswordChangeRequest request) {
     userFacade.changePassword(id, request);
   }
 
   @DeleteMapping("/management/admin/delete/{id}")
   @PreAuthorize("hasRole('ADMIN')")
-  public void removeUser(@PathVariable Integer id) {
+  public void removeUser(@PathVariable @NotNull Integer id) {
     userFacade.deleteUser(id);
   }
 }
