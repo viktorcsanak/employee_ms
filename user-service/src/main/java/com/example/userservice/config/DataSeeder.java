@@ -6,6 +6,7 @@ import com.example.userservice.user.model.User;
 import com.example.userservice.user.residence.PlaceOfResidence;
 import com.example.userservice.user.residence.PlaceOfResidenceRepository;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import org.springframework.boot.CommandLineRunner;
@@ -21,10 +22,24 @@ public class DataSeeder implements CommandLineRunner {
   private final PlaceOfResidenceRepository placeRepo;
   private final PasswordEncoder passwordEncoder;
 
-  private static final String[] CITIES = {"Novi Sad", "Belgrade", "Subotica", "Szeged", "Budapest"};
-  private static final String[] GENDERS = {"MALE", "FEMALE"};
-  private static final String[] POSITIONS = {"ENGINEER", "HR", "MANAGER", "INTERN"};
   private static final Random RANDOM = new Random();
+
+  private static final String[] FIRST_NAMES = {
+    "John", "Alice", "Michael", "Sara", "David", "Emma", "Chris", "Lara", "Tom", "Sophia"
+  };
+
+  private static final String[] LAST_NAMES = {
+    "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Taylor", "Moore"
+  };
+
+  private static final String[] POSITIONS = {
+    "Software Engineer",
+    "HR Specialist",
+    "Data Analyst",
+    "Product Manager",
+    "Designer",
+    "Project Coordinator"
+  };
 
   public DataSeeder(
       UserRepository userRepository,
@@ -40,57 +55,137 @@ public class DataSeeder implements CommandLineRunner {
     seedUsers(50);
   }
 
+  @SuppressWarnings("checkstyle:methodlength")
   private void seedUsers(int count) {
+    if (userRepository.findByEmail("viktor@company.io").isEmpty()) {
 
-    if (userRepository.findByEmail("super@m.c").isEmpty()) {
+      final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
 
-      final PlaceOfResidence adminPlace = getOrCreatePlace("Novi Sad", "21000");
-
-      final User admin =
+      final User user =
           User.builder()
-              .firstName("System")
-              .lastName("Admin")
-              .email("super@m.c")
-              .password(passwordEncoder.encode("123"))
-              .dateOfBirth(LocalDate.of(1990, 1, 1))
-              .gender("MALE")
-              .position("ADMIN")
-              .startOfEmployment(LocalDate.now())
-              .address("Admin Street 0")
-              .placeOfResidence(adminPlace)
+              .email("viktor@company.io")
+              .password(passwordEncoder.encode("wildcard"))
+              .firstName("Viktor")
+              .lastName("Csanak")
+              .dateOfBirth(LocalDate.of(2000, 6, 1))
+              .startOfEmployment(LocalDate.of(2022, 7, 1))
+              .gender("Male")
+              .position("Medior Embedded Software Engineer")
+              .address("undisclosed address")
+              .placeOfResidence(place)
               .roles(Set.of(Role.ADMIN, Role.HR, Role.BASIC))
               .build();
 
-      userRepository.save(admin);
+      userRepository.save(user);
     }
 
-    for (int i = 0; i < count; i++) {
+    if (userRepository.findByEmail("jane.doe@company.io").isEmpty()) {
 
-      final String firstName = randomFirstName();
-      final String lastName = randomLastName();
-      final String email = (firstName + "." + lastName + i + "@test.com").toLowerCase();
+      final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
+
+      final User user =
+          User.builder()
+              .email("jane.doe@company.io")
+              .password(passwordEncoder.encode("hrmanagement"))
+              .firstName("Jane")
+              .lastName("Doe")
+              .dateOfBirth(LocalDate.of(1989, 3, 12))
+              .startOfEmployment(LocalDate.of(2015, 8, 30))
+              .gender("Female")
+              .position("Lead HR Manager")
+              .address("undisclosed address")
+              .placeOfResidence(place)
+              .roles(Set.of(Role.HR, Role.BASIC))
+              .build();
+
+      userRepository.save(user);
+    }
+
+    if (userRepository.findByEmail("bob@company.io").isEmpty()) {
+
+      final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
+
+      final User user =
+          User.builder()
+              .email("bob@company.io")
+              .password(passwordEncoder.encode("admin123"))
+              .firstName("Bob")
+              .lastName("Ace")
+              .dateOfBirth(LocalDate.of(1994, 12, 1))
+              .startOfEmployment(LocalDate.of(2020, 1, 25))
+              .gender("Male")
+              .position("System Administrator")
+              .address("undisclosed address")
+              .placeOfResidence(place)
+              .roles(Set.of(Role.ADMIN, Role.BASIC))
+              .build();
+
+      userRepository.save(user);
+    }
+
+    if (userRepository.findByEmail("joe.average@company.io").isEmpty()) {
+
+      final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
+
+      final User user =
+          User.builder()
+              .email("joe.average@company.io")
+              .password(passwordEncoder.encode("notmypet"))
+              .firstName("Joe")
+              .lastName("Average")
+              .dateOfBirth(LocalDate.of(1994, 12, 1))
+              .startOfEmployment(LocalDate.of(2020, 1, 25))
+              .gender("Male")
+              .position("IT technician")
+              .address("undisclosed address")
+              .placeOfResidence(place)
+              .roles(Set.of(Role.BASIC))
+              .build();
+
+      userRepository.save(user);
+    }
+    for (int i = 0; i < 96; i++) {
+
+      final String first = FIRST_NAMES[RANDOM.nextInt(FIRST_NAMES.length)];
+      final String last = LAST_NAMES[RANDOM.nextInt(LAST_NAMES.length)];
+      final String email = (first + "." + last + i + "@company.io").toLowerCase();
 
       if (userRepository.findByEmail(email).isPresent()) {
         continue;
       }
 
-      final String city = randomCity();
-      final String postal = randomPostal();
-      final PlaceOfResidence place = getOrCreatePlace(city, postal);
+      final boolean isAdmin = i % 20 == 0;
+      final boolean hrAccess = i % 15 == 0;
+
+      final String position = POSITIONS[RANDOM.nextInt(POSITIONS.length)];
+
+      final Set<Role> roles = new HashSet<>();
+      roles.add(Role.BASIC);
+      if (isAdmin) {
+        roles.add(Role.ADMIN);
+      }
+      if (hrAccess) {
+        roles.add(Role.HR);
+      }
+      final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
 
       final User user =
           User.builder()
-              .firstName(firstName)
-              .lastName(lastName)
               .email(email)
               .password(passwordEncoder.encode("password123"))
-              .dateOfBirth(randomDate())
-              .gender(randomGender())
-              .position(randomPosition())
-              .startOfEmployment(randomStartDate())
-              .address("Generated address " + i)
+              .firstName(first)
+              .lastName(last)
+              .dateOfBirth(
+                  LocalDate.of(
+                      1990 + RANDOM.nextInt(30), 1 + RANDOM.nextInt(12), 1 + RANDOM.nextInt(28)))
+              .startOfEmployment(
+                  LocalDate.of(
+                      2020 + RANDOM.nextInt(5), 1 + RANDOM.nextInt(12), 1 + RANDOM.nextInt(28)))
+              .gender("Other")
+              .position(position)
+              .address("undisclosed address")
               .placeOfResidence(place)
-              .roles(Set.of(Role.BASIC))
+              .roles(roles)
               .build();
 
       userRepository.save(user);
@@ -104,37 +199,5 @@ public class DataSeeder implements CommandLineRunner {
             () ->
                 placeRepo.save(
                     PlaceOfResidence.builder().city(city).postalCode(postalCode).build()));
-  }
-
-  private String randomCity() {
-    return CITIES[RANDOM.nextInt(CITIES.length)];
-  }
-
-  private String randomPostal() {
-    return String.valueOf(2000 + RANDOM.nextInt(8000));
-  }
-
-  private String randomGender() {
-    return GENDERS[RANDOM.nextInt(GENDERS.length)];
-  }
-
-  private String randomPosition() {
-    return POSITIONS[RANDOM.nextInt(POSITIONS.length)];
-  }
-
-  private String randomFirstName() {
-    return "User" + RANDOM.nextInt(1000);
-  }
-
-  private String randomLastName() {
-    return "Test" + RANDOM.nextInt(1000);
-  }
-
-  private LocalDate randomDate() {
-    return LocalDate.of(1970 + RANDOM.nextInt(40), 1 + RANDOM.nextInt(12), 1 + RANDOM.nextInt(28));
-  }
-
-  private LocalDate randomStartDate() {
-    return LocalDate.of(2015 + RANDOM.nextInt(10), 1 + RANDOM.nextInt(12), 1 + RANDOM.nextInt(28));
   }
 }
