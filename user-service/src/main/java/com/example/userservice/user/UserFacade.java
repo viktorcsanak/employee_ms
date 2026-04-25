@@ -1,10 +1,10 @@
 package com.example.userservice.user;
 
 import com.example.userservice.auth.JwtService;
-import com.example.userservice.auth.dto.RegisterRequest;
 import com.example.userservice.user.dto.AdminUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
 import com.example.userservice.user.dto.PermissionChangeRequest;
+import com.example.userservice.user.dto.RegisterRequest;
 import com.example.userservice.user.dto.UserProfileResponse;
 import com.example.userservice.user.model.User;
 import java.util.List;

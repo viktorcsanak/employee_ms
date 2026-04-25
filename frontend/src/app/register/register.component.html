@@ -131,16 +131,16 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-    
-                <div>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Address</mat-label>
-                        <input matInput type="text" formControlName="address">
-                        <mat-error *ngIf="registerForm.get('placeOfResidence.address')?.invalid && registerForm.get('placeOfResidence.address')?.touched">
-                        <span *ngIf="registerForm.get('placeOfResidence.address')?.errors?.['required']">Address is required.</span>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+            </div>
+
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Address</mat-label>
+                    <input matInput type="text" formControlName="address">
+                    <mat-error *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched">
+                    <span *ngIf="registerForm.get('address')?.errors?.['required']">Address is required.</span>
+                    </mat-error>
+                </mat-form-field>
             </div>
     
             <!-- Position Field -->

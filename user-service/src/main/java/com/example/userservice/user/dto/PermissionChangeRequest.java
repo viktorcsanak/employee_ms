@@ -1,3 +1,6 @@
 package com.example.userservice.user.dto;
 
-public record PermissionChangeRequest(boolean adminPrivileges, boolean hrManagementAccess) {}
+import jakarta.validation.constraints.NotNull;
+
+public record PermissionChangeRequest(
+    @NotNull boolean adminPrivileges, @NotNull boolean hrManagementAccess) {}

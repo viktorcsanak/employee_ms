@@ -1,9 +1,9 @@
 package com.example.userservice.user;
 
-import com.example.userservice.auth.dto.RegisterRequest;
 import com.example.userservice.user.dto.AdminUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
 import com.example.userservice.user.dto.PermissionChangeRequest;
+import com.example.userservice.user.dto.RegisterRequest;
 import com.example.userservice.user.dto.UserProfileResponse;
 import java.util.List;
 import org.slf4j.Logger;
@@ -30,15 +30,16 @@ public class UserController {
     this.userFacade = userFacade;
   }
 
-  @PostMapping("/register")
-  public void register(@RequestBody RegisterRequest request) {
-    userFacade.register(request);
-  }
-
   @GetMapping
   @PreAuthorize("hasRole('BASIC')")
   public UserProfileResponse getUser(@CookieValue(name = "token") String token) {
     return userFacade.getProfileFromToken(token);
+  }
+
+  @PostMapping("/management/admin/register")
+  @PreAuthorize("hasRole('ADMIN')")
+  public void register(@RequestBody RegisterRequest request) {
+    userFacade.register(request);
   }
 
   @GetMapping("/management/admin")
@@ -65,24 +66,4 @@ public class UserController {
   public void removeUser(@PathVariable Integer id) {
     userFacade.deleteUser(id);
   }
-
-  /* @GetMapping
-  public List<User> findUsers(@RequestParam UserSearchRequest request) {
-    log.info(
-        "firstName='{}', lastName='{}', dob='{}'",
-        request.firstName(),
-        request.lastName(),
-        request.dateOfBirth());
-    return userService.getUsers(request);
-  } */
-
-  /* @PutMapping("/{id}")
-  public void updateUser(@PathVariable Integer id, @RequestBody UserUpdateRequest update) {
-    userFacade.updateUser(id, update);
-  }
-
-  @DeleteMapping("/{id}")
-  public void deleteUser(@PathVariable Integer id) {
-    userFacade.deleteUser(id);
-  } */
 }
