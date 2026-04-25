@@ -1,5 +1,6 @@
 package com.example.userservice.auth;
 
+import com.example.userservice.common.exception.UserUnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -24,6 +25,10 @@ public class JwtService {
   }
 
   public Integer verifyToken(String token) {
+    if (token == null) {
+      throw new UserUnauthorizedException("Invalid or expired token");
+    }
+
     try {
       final Claims claims =
           Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
@@ -31,7 +36,7 @@ public class JwtService {
       return Integer.parseInt(claims.getSubject()); // returns Id
 
     } catch (JwtException e) {
-      throw new JwtException("Invalid or expired token");
+      throw new UserUnauthorizedException("Invalid or expired token");
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.example.userservice.auth;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.example.userservice.auth.dto.LoginRequest;
@@ -69,7 +70,7 @@ class AuthServiceTest {
 
   @Test
   void logout_nullToken_throws() {
-    assertThrows(NullPointerException.class, () -> authService.logout(null));
+    assertThrows(UserUnauthorizedException.class, () -> authService.logout(null));
   }
 
   @Test
@@ -77,5 +78,13 @@ class AuthServiceTest {
     authService.verifyToken("abc");
 
     verify(sessionService).verifySession("abc");
+    verifyNoMoreInteractions(sessionService);
+  }
+
+  @Test
+  void logout_validToken_callsSessionService() {
+    authService.logout("token123");
+
+    verify(sessionService).invalidateSession("token123");
   }
 }

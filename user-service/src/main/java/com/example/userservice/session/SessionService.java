@@ -46,6 +46,7 @@ public class SessionService {
   }
 
   public void verifySession(String token) {
+    jwtService.verifyToken(token);
     if (!sessionRepository.findByTokenAndActiveTrue(token).isPresent()) {
       throw new UserUnauthorizedException("Invalid token");
     }

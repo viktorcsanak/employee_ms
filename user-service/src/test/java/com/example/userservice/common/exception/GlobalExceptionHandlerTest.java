@@ -6,19 +6,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandlerTest.ExceptionThrowingController.class)
 class GlobalExceptionHandlerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  // --- test-only controller to trigger exceptions ---
+  // --- test-only controller ---
   @RestController
   static class ExceptionThrowingController {
 
@@ -54,7 +57,7 @@ class GlobalExceptionHandlerTest {
 
     @GetMapping("/test/db")
     void db() {
-      throw new org.springframework.dao.DataAccessException("db failure") {};
+      throw new DataAccessException("db failure") {};
     }
 
     @GetMapping("/test/generic")

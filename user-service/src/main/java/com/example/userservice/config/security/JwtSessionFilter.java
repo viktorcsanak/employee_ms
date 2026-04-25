@@ -1,5 +1,7 @@
 package com.example.userservice.config.security;
 
+import com.example.userservice.common.exception.SessionNotFoundException;
+import com.example.userservice.common.exception.UserUnauthorizedException;
 import com.example.userservice.session.SessionService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -72,7 +74,7 @@ public class JwtSessionFilter extends OncePerRequestFilter {
 
       filterChain.doFilter(request, response);
 
-    } catch (Exception e) {
+    } catch (UserUnauthorizedException | SessionNotFoundException e) {
       log.error("token processing failed: {}", e.getMessage());
       response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
     }

@@ -40,7 +40,7 @@ public class AuthService {
 
   public void logout(String sessionToken) {
     if (sessionToken == null) {
-      throw new NullPointerException("Missing session token.");
+      throw new UserUnauthorizedException("Missing session token.");
     }
     sessionService.invalidateSession(sessionToken);
   }
