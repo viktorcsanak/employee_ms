@@ -5,11 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.example.userservice.auth.JwtService;
+import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
-import com.example.userservice.permissions.Role;
 import com.example.userservice.user.model.User;
+import java.time.Instant;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,10 +26,12 @@ class SessionServiceTest {
 
   @Test
   void createSession_savesSession() {
+
     User user = mock(User.class);
     when(user.getId()).thenReturn(1);
 
     when(jwtService.generateToken(1)).thenReturn("token");
+    when(jwtService.getValidDate("token")).thenReturn(java.time.Instant.now().plusSeconds(3600));
 
     when(sessionRepository.save(any(Session.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
@@ -41,18 +43,22 @@ class SessionServiceTest {
   }
 
   @Test
-  void verifySession_validJwtAndActiveSession_doesNotThrow() {
-    Session session = mock(Session.class);
-    User user = mock(User.class);
+  void verifySession_validSession_doesNotThrow() {
 
     when(jwtService.verifyToken("token")).thenReturn(1);
-    when(sessionRepository.findByTokenAndActiveTrue("token")).thenReturn(Optional.of(session));
+
+    Session session = mock(Session.class);
+
+    when(sessionRepository.findByTokenAndActiveTrueAndValidUntilAfter(
+            eq("token"), any(Instant.class)))
+        .thenReturn(Optional.of(session));
 
     assertDoesNotThrow(() -> sessionService.verifySession("token"));
   }
 
   @Test
   void verifySession_invalidJwt_throwsUnauthorized() {
+
     when(jwtService.verifyToken("token")).thenThrow(new UserUnauthorizedException("expired"));
 
     assertThrows(UserUnauthorizedException.class, () -> sessionService.verifySession("token"));
@@ -60,44 +66,59 @@ class SessionServiceTest {
 
   @Test
   void verifySession_missingSession_throwsUnauthorized() {
+
     when(jwtService.verifyToken("token")).thenReturn(1);
-    when(sessionRepository.findByTokenAndActiveTrue("token")).thenReturn(Optional.empty());
+
+    when(sessionRepository.findByTokenAndActiveTrueAndValidUntilAfter(
+            eq("token"), any(Instant.class)))
+        .thenReturn(Optional.empty());
 
     assertThrows(UserUnauthorizedException.class, () -> sessionService.verifySession("token"));
   }
 
   @Test
-  void getSessionUserId_returnsUserId() {
-    User user = mock(User.class);
-    when(user.getId()).thenReturn(42);
+  void getValidSession_returnsSession() {
 
     Session session = mock(Session.class);
-    when(session.getUser()).thenReturn(user);
 
-    when(sessionRepository.findByTokenAndActiveTrue("token")).thenReturn(Optional.of(session));
+    when(sessionRepository.findByTokenAndActiveTrueAndValidUntilAfter(
+            eq("token"), any(Instant.class)))
+        .thenReturn(Optional.of(session));
 
-    assertEquals(42, sessionService.getSessionUserId("token"));
+    Session result = sessionService.getValidSession("token");
+
+    assertEquals(session, result);
   }
 
   @Test
-  void getUserRoles_returnsRoles() {
-    User user = mock(User.class);
-    when(user.getRoles()).thenReturn(Set.of(Role.ADMIN, Role.HR));
+  void getValidSession_missing_throwsException() {
 
-    Session session = mock(Session.class);
-    when(session.getUser()).thenReturn(user);
+    when(sessionRepository.findByTokenAndActiveTrueAndValidUntilAfter(
+            eq("token"), any(Instant.class)))
+        .thenReturn(Optional.empty());
 
-    when(sessionRepository.findByTokenAndActiveTrue("token")).thenReturn(Optional.of(session));
-
-    Set<Role> roles = sessionService.getUserRoles("token");
-
-    assertEquals(2, roles.size());
-    assertTrue(roles.contains(Role.ADMIN));
-    assertTrue(roles.contains(Role.HR));
+    assertThrows(SessionNotFoundException.class, () -> sessionService.getValidSession("token"));
   }
 
   @Test
-  void invalidateSession_marksSessionInactive() {
+  void validateAndGetSession_returnsSession() {
+
+    when(jwtService.verifyToken("token")).thenReturn(1);
+
+    Session session = mock(Session.class);
+
+    when(sessionRepository.findByTokenAndActiveTrueAndValidUntilAfter(
+            eq("token"), any(Instant.class)))
+        .thenReturn(Optional.of(session));
+
+    Session result = sessionService.validateAndGetSession("token");
+
+    assertEquals(session, result);
+  }
+
+  @Test
+  void invalidateSession_marksInactive() {
+
     Session session = mock(Session.class);
 
     when(sessionRepository.findByTokenAndActiveTrue("token")).thenReturn(Optional.of(session));
@@ -109,8 +130,17 @@ class SessionServiceTest {
   }
 
   @Test
-  void invalidateAllUserSessions_deletesByUserId() {
+  void invalidateAllUserSessions_callsRepository() {
+
     sessionService.invalidateAllUserSessions(1);
+
+    verify(sessionRepository).findByUserIdAndActiveTrue(1);
+  }
+
+  @Test
+  void removeAllUserSessions_deletesSessions() {
+
+    sessionService.removeAllUserSessions(1);
 
     verify(sessionRepository).deleteAllByUserId(1);
   }

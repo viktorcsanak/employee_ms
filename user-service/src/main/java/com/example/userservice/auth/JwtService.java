@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,21 @@ public class JwtService {
         .expiration(new Date(System.currentTimeMillis() + 86400000))
         .signWith(key)
         .compact();
+  }
+
+  public Instant getValidDate(String token) {
+    if (token == null) {
+      throw new UserUnauthorizedException("Token is null");
+    }
+    try {
+      final Claims claims =
+          Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+
+      return claims.getExpiration().toInstant();
+
+    } catch (JwtException e) {
+      throw new UserUnauthorizedException("Invalid token");
+    }
   }
 
   public Integer verifyToken(String token) {

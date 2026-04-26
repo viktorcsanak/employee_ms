@@ -6,7 +6,9 @@ import static org.mockito.Mockito.*;
 import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
 import com.example.userservice.permissions.Role;
+import com.example.userservice.session.Session;
 import com.example.userservice.session.SessionService;
+import com.example.userservice.user.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,26 +40,33 @@ class JwtSessionFilterTest {
 
   @Test
   void missingToken_returnsUnauthorized() throws Exception {
-    when(request.getRequestURI()).thenReturn("/api/some/protected");
+
+    when(request.getRequestURI()).thenReturn("/api/protected");
     when(request.getCookies()).thenReturn(null);
 
     filter.doFilterInternal(request, response, filterChain);
 
     verify(response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
     verifyNoInteractions(filterChain);
+    verifyNoInteractions(sessionService);
   }
 
   @Test
   void validToken_setsAuthentication_andContinues() throws Exception {
+
     when(request.getRequestURI()).thenReturn("/api/protected");
 
     Cookie cookie = new Cookie("token", "abc");
     when(request.getCookies()).thenReturn(new Cookie[] {cookie});
 
-    when(sessionService.getSessionUserId("abc")).thenReturn(1);
-    when(sessionService.getUserRoles("abc")).thenReturn(Set.of(Role.ADMIN));
+    // mock domain objects
+    Session session = mock(Session.class);
+    User user = mock(User.class);
 
-    doNothing().when(sessionService).verifySession("abc");
+    when(sessionService.validateAndGetSession("abc")).thenReturn(session);
+    when(session.getUser()).thenReturn(user);
+    when(user.getId()).thenReturn(1);
+    when(user.getRoles()).thenReturn(Set.of(Role.ADMIN));
 
     filter.doFilterInternal(request, response, filterChain);
 
@@ -65,19 +74,23 @@ class JwtSessionFilterTest {
 
     assertNotNull(auth);
     assertEquals(1, auth.getPrincipal());
+
     assertTrue(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
 
+    verify(sessionService).validateAndGetSession("abc");
     verify(filterChain).doFilter(request, response);
   }
 
   @Test
   void invalidSession_returnsForbidden_userUnauthorized() throws Exception {
+
     when(request.getRequestURI()).thenReturn("/api/protected");
 
     Cookie cookie = new Cookie("token", "abc");
     when(request.getCookies()).thenReturn(new Cookie[] {cookie});
 
-    doThrow(new UserUnauthorizedException("invalid")).when(sessionService).verifySession("abc");
+    when(sessionService.validateAndGetSession("abc"))
+        .thenThrow(new UserUnauthorizedException("invalid"));
 
     filter.doFilterInternal(request, response, filterChain);
 
@@ -87,12 +100,14 @@ class JwtSessionFilterTest {
 
   @Test
   void invalidSession_returnsForbidden_sessionNotFound() throws Exception {
+
     when(request.getRequestURI()).thenReturn("/api/protected");
 
     Cookie cookie = new Cookie("token", "abc");
     when(request.getCookies()).thenReturn(new Cookie[] {cookie});
 
-    doThrow(new SessionNotFoundException("missing")).when(sessionService).verifySession("abc");
+    when(sessionService.validateAndGetSession("abc"))
+        .thenThrow(new SessionNotFoundException("missing"));
 
     filter.doFilterInternal(request, response, filterChain);
 
@@ -102,6 +117,7 @@ class JwtSessionFilterTest {
 
   @Test
   void authEndpoints_areSkipped() throws Exception {
+
     when(request.getRequestURI()).thenReturn("/api/auth/login");
 
     filter.doFilterInternal(request, response, filterChain);
