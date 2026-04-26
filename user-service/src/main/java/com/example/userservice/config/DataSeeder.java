@@ -9,15 +9,16 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("seed")
-public class DataSeeder implements CommandLineRunner {
-
+public class DataSeeder implements ApplicationRunner {
+  private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
   private final UserRepository userRepository;
   private final PlaceOfResidenceRepository placeRepo;
   private final PasswordEncoder passwordEncoder;
@@ -51,12 +52,16 @@ public class DataSeeder implements CommandLineRunner {
   }
 
   @Override
-  public void run(String... args) {
-    seedUsers(50);
+  public void run(ApplicationArguments args) {
+    seedUsers(100);
   }
 
   @SuppressWarnings("checkstyle:methodlength")
   private void seedUsers(int count) {
+    if (userRepository.count() > 0) {
+      log.info("skip user data seeding");
+      return;
+    }
     if (userRepository.findByEmail("viktor@company.io").isEmpty()) {
 
       final PlaceOfResidence place = getOrCreatePlace("Szabadka", "24000");
@@ -144,7 +149,7 @@ public class DataSeeder implements CommandLineRunner {
 
       userRepository.save(user);
     }
-    for (int i = 0; i < 96; i++) {
+    for (int i = 0; i < (count - 4); i++) {
 
       final String first = FIRST_NAMES[RANDOM.nextInt(FIRST_NAMES.length)];
       final String last = LAST_NAMES[RANDOM.nextInt(LAST_NAMES.length)];

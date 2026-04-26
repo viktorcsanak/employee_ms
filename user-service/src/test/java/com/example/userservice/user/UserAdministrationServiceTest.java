@@ -83,7 +83,7 @@ class UserAdministrationServiceTest {
     service.deleteUser(1);
 
     verify(repo).deleteById(1);
-    verify(sessionService).invalidateAllUserSessions(1);
+    verify(sessionService).removeAllUserSessions(1);
   }
 
   @Test
