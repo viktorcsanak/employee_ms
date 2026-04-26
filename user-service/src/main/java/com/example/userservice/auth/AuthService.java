@@ -45,6 +45,10 @@ public class AuthService {
     sessionService.invalidateSession(sessionToken);
   }
 
+  public void logoutAllUserSessions(Integer id) {
+    sessionService.invalidateAllUserSessions(id);
+  }
+
   public void verifyToken(String sessionToken) {
     sessionService.verifySession(sessionToken);
   }

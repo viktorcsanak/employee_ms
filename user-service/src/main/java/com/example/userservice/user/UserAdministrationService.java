@@ -56,7 +56,7 @@ public class UserAdministrationService {
       throw new UserNotFoundException("User not found: " + id);
     }
     repo.deleteById(id);
-    sessionService.invalidateAllUserSessions(id);
+    sessionService.removeAllUserSessions(id);
   }
 
   public void changePassword(Integer id, PasswordChangeRequest request) {

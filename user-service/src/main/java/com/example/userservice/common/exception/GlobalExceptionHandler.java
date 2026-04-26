@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -38,7 +39,16 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(UserUnauthorizedException.class)
   public ResponseEntity<ApiResponse> handleUserUnauthorizedException(UserUnauthorizedException ex) {
     log.warn("Invalid or expired token");
+    final ResponseCookie expiredCookie =
+        ResponseCookie.from("token", "")
+            .httpOnly(true)
+            .secure(false)
+            .path("/")
+            .maxAge(0)
+            .sameSite("Strict")
+            .build();
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .header("Set-Cookie", expiredCookie.toString())
         .body(ApiResponse.builder().errorMessage("Invalid or expired token").build());
   }
 

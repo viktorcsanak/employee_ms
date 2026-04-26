@@ -41,8 +41,13 @@ public class SessionService {
   }
 
   @Transactional
-  public void invalidateAllUserSessions(Integer id) {
+  public void removeAllUserSessions(Integer id) {
     sessionRepository.deleteAllByUserId(id);
+  }
+
+  @Transactional
+  public void invalidateAllUserSessions(Integer id) {
+    sessionRepository.findByUserIdAndActiveTrue(id).forEach(session -> session.setActive(false));
   }
 
   public void verifySession(String token) {

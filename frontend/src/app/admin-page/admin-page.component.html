@@ -96,6 +96,7 @@
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let user">
                 <button mat-button (click)="onChangePassword(user)">Change Password</button>
+                <button mat-button (click)="logOutAllSessions(user.id)">Log out</button>
             </td>
         </ng-container>
     
