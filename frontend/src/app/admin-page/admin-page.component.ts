@@ -72,8 +72,8 @@ export class AdminPageComponent {
     }
     
     fetchUserData(): Observable<UserData[]> {
-        const url = `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin`;
-        return this.http.get<UserData>(url, {withCredentials: true }).pipe(
+        const url = `/api/user/management/admin`;
+        return this.http.get<UserData>(url, { withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -83,8 +83,8 @@ export class AdminPageComponent {
     }
 
     fetchCurrentUserData(): Observable<UserData> {
-        const url = `${environment.serverUrl}:${environment.serverPort}/api/user`;
-        return this.http.get<UserData>(url, {withCredentials: true }).pipe(
+        const url = `/api/user`;
+        return this.http.get<UserData>(url, { withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -143,7 +143,7 @@ export class AdminPageComponent {
     
     saveChanges(user: UserData): void {
         this.http.put(
-            `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/permissions/${user.id}`,
+            `/api/user/management/admin/permissions/${user.id}`,
             { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess },
             { withCredentials: true }
         ).pipe().subscribe({
@@ -172,7 +172,7 @@ export class AdminPageComponent {
             }
 
             this.http.put(
-                `${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/password/${user.id}`,
+                `/api/user/management/admin/password/${user.id}`,
                 { password: newPassword }, { withCredentials: true }
             ).pipe().subscribe({
                 next: (data) => {
@@ -234,8 +234,8 @@ export class AdminPageComponent {
 
     logout(): void {
         this.http.post(
-            `${environment.serverUrl}:${environment.serverPort}/api/auth/logout`,
-            {}, {withCredentials: true}
+            `/api/auth/logout`,
+            {}, { withCredentials: true }
         ).subscribe(
             (response: any) => {
                 console.log(response.msg);

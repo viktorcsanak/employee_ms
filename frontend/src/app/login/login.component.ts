@@ -3,7 +3,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -33,7 +32,7 @@ export class LoginComponent {
     const body = this.form.value;
 
     const url =
-        `${environment.serverUrl}:${environment.serverPort}/api/auth/login`;
+        `/api/auth/login`;
 
     this.http.post(url, body, { withCredentials: true })
         .pipe(

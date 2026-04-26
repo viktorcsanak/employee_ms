@@ -5,7 +5,6 @@ import { Observable, catchError, of, throwError } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { environment } from 'src/environments/environment';
 
 interface UserData {
     id: any,
@@ -87,7 +86,7 @@ export class HrPageComponent {
     
     fetchUserData(): Observable<UserData[]> {
         return this.http.get<UserData>(
-            `${environment.serverUrl}:${environment.serverPort}/api/user/management/hr`,
+            `/api/user/management/hr`,
             { withCredentials: true }
         ).pipe(
             catchError((error: HttpErrorResponse) => {
@@ -100,7 +99,7 @@ export class HrPageComponent {
 
     fetchCurrentUserData(): Observable<UserData> {
         return this.http.get<UserData>(
-            `${environment.serverUrl}:${environment.serverPort}/api/user`,
+            `/api/user`,
             { withCredentials: true }
         ).pipe(
             catchError((error: HttpErrorResponse) => {
@@ -134,7 +133,7 @@ export class HrPageComponent {
 
     logout(): void {
         this.http.post(
-            `${environment.serverUrl}:${environment.serverPort}/api/auth/logout`,
+            `/api/auth/logout`,
              {}, { withCredentials: true }).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful

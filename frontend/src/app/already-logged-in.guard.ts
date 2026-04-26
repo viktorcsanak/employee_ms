@@ -3,13 +3,12 @@ import { CanActivateFn, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 export const alreadyLoggedInGuard: CanActivateFn = (route, state): Observable<boolean> => {
     const http = inject(HttpClient);
     const router = inject(Router);
 
-    const url = `${environment.serverUrl}:${environment.serverPort}/api/auth/verify-token`;
+    const url = `/api/auth/verify-token`;
 
     return http.get(url, { withCredentials: true }).pipe(
         map((response: any) => {

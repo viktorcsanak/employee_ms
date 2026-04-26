@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 
 interface UserData {
     email: string;
@@ -82,7 +81,7 @@ export class HomePageComponent {
     }
 
     fetchUserData(): Observable<UserData> {
-        const url = `${environment.serverUrl}:${environment.serverPort}/api/user`;
+        const url = `/api/user`;
         return this.http.get<UserData>(url, {withCredentials: true}).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
@@ -93,7 +92,7 @@ export class HomePageComponent {
     }
 
     logout(): void {
-        const url = `${environment.serverUrl}:${environment.serverPort}/api/auth/logout`;
+        const url = `/api/auth/logout`;
         this.http.post(url, {}, {withCredentials: true}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful

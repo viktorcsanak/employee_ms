@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 
 interface UserData {
     __id: any,
@@ -79,7 +78,7 @@ export class RegisterComponent {
         console.log(this.registerForm.value);
         console.log(this.registerData);
         
-        this.http.post(`${environment.serverUrl}:${environment.serverPort}/api/user/management/admin/register`,
+        this.http.post(`/api/user/management/admin/register`,
             this.registerForm.value, { withCredentials: true})
             .pipe().subscribe({
             next: (response) => {
@@ -104,7 +103,7 @@ export class RegisterComponent {
 
     fetchCurrentUserData(): Observable<UserData> {
         return this.http.get<UserData>(
-            `${environment.serverUrl}:${environment.serverPort}/api/user`,
+            `/api/user`,
             { withCredentials: true })
             .pipe(
             catchError((error: HttpErrorResponse) => {
@@ -138,7 +137,7 @@ export class RegisterComponent {
     }
 
     logout(): void {
-        this.http.post(`${environment.serverUrl}:${environment.serverPort}/api/auth/logout`, {}).subscribe(
+        this.http.post(`/api/auth/logout`, {}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
                 this.router.navigate(['/login']);
