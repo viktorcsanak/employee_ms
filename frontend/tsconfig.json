@@ -23,7 +23,12 @@
       "dom"
     ],
     "types": ["node"],
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    },
   },
+  
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

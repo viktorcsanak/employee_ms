@@ -39,8 +39,8 @@ export class RegisterComponent {
         placeOfResidence: new FormGroup({
             city: new FormControl('', { validators: [Validators.required] }),
             postalCode: new FormControl('', { validators: [Validators.required] }),
-            address: new FormControl('', { validators: [Validators.required] }),
         }),
+        address: new FormControl('', { validators: [Validators.required] }),
         position: new FormControl('', { validators: [Validators.required] }),
         gender: new FormControl('', { validators: [Validators.required] }),
         startOfEmployment: new FormControl(''),
@@ -78,7 +78,9 @@ export class RegisterComponent {
         console.log(this.registerForm.value);
         console.log(this.registerData);
         
-        this.http.post('/api/auth/register', this.registerForm.value).pipe().subscribe({
+        this.http.post(`/api/user/management/admin/register`,
+            this.registerForm.value, { withCredentials: true})
+            .pipe().subscribe({
             next: (response) => {
                 this.successMessage = 'Registration successful!';
                 this.emailTakenError = null;
@@ -100,7 +102,10 @@ export class RegisterComponent {
     }
 
     fetchCurrentUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        return this.http.get<UserData>(
+            `/api/user`,
+            { withCredentials: true })
+            .pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.emailTakenError = 'Error occurred while fetching user data.';
@@ -120,9 +125,9 @@ export class RegisterComponent {
             dateOfBirth: '',
             placeOfResidence: {
                 city: '',
-                address: '',
                 postalCode: ''
             },
+            address: '',
             position: '',
             startOfEmployment: '',
             gender: '',
@@ -132,7 +137,7 @@ export class RegisterComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        this.http.post(`/api/auth/logout`, {}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
                 this.router.navigate(['/login']);

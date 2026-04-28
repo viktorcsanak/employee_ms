@@ -7,7 +7,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 interface UserData {
-    __id: any,
+    id: any,
     email: string;
     firstName: string;
     middleName: string;
@@ -15,9 +15,9 @@ interface UserData {
     dateOfBirth: Date,
     placeOfResidence: {
         city: string,
-        address: string,
         postalCode: string,
     },
+    address: string,
     position: string,
     startOfEmployment: string,
     gender: string,
@@ -85,7 +85,10 @@ export class HrPageComponent {
     }
     
     fetchUserData(): Observable<UserData[]> {
-        return this.http.get<UserData>('/api/user/management/hr').pipe(
+        return this.http.get<UserData>(
+            `/api/user/management/hr`,
+            { withCredentials: true }
+        ).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -95,7 +98,10 @@ export class HrPageComponent {
     }
 
     fetchCurrentUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        return this.http.get<UserData>(
+            `/api/user`,
+            { withCredentials: true }
+        ).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -126,7 +132,9 @@ export class HrPageComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        this.http.post(
+            `/api/auth/logout`,
+             {}, { withCredentials: true }).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
                 this.router.navigate(['/home']);

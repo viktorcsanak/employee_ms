@@ -1,48 +1,68 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import { catchError, throwError } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+    styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-    constructor(private http: HttpClient, private router: Router) {}
 
-    loginData = {email: '', password: ''};
     errorMessage: string | null = null;
 
     form: FormGroup = new FormGroup({
-        email: new FormControl('', { validators: [Validators.required, Validators.email] }),
-        password: new FormControl('', { validators: [Validators.required]}),
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [Validators.required]),
     });
 
+    constructor(
+        private http: HttpClient,
+        private router: Router
+    ) { }
+
     onSubmit() {
-        if (!this.form.valid) {
-            console.log("Login data is invalid", this.form.value);
-            return;
-        }
-        const { email, password } = this.form.value;
-        this.loginData.email = email;
-        this.loginData.password = password;
-        this.http.post('/api/auth/login', this.loginData).pipe(
+    if (this.form.invalid) {
+        console.log("Login data is invalid", this.form.value);
+        return;
+    }
+
+    const body = this.form.value;
+
+    const url =
+        `/api/auth/login`;
+
+    this.http.post(url, body, { withCredentials: true })
+        .pipe(
             catchError((error: HttpErrorResponse) => {
-                if (error.status == 401) {
-                    return throwError('Invalid username or password');
+
+                console.error('Backend error:', error);
+
+                if (error.error?.errorMessage) {
+                    this.errorMessage = error.error.errorMessage;
+                } 
+                else if (error.status === 401) {
+                    this.errorMessage = 'Invalid username or password';
+                } 
+                else if (error.status === 404) {
+                    this.errorMessage = 'Backend endpoint not found';
+                } 
+                else {
+                    this.errorMessage = 'An unknown error occurred';
                 }
-                return throwError('An unknown error occured');
+
+                return throwError(() => error);
             })
-        ).subscribe({
+        )
+        .subscribe({
             next: (response) => {
-                console.log('Login repsonse:', response);
+                console.log('Login response:', response);
                 this.router.navigate(['/home']);
-            }, error: (errorMessage) => {
-                console.error('Login Error', errorMessage);
-                this.errorMessage = errorMessage;
+            },
+            error: (err: HttpErrorResponse) => {
+                console.error('Login Error', err);
             }
         });
     }
