@@ -25,14 +25,3 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-# Spring-boot(Debian 12)
-
-## Local
-
-To run the application with a local kafka and postgres setup run ` mvn clean install -Dspring.profiles.active=local` and `mvn spring-boot:run`
-
-## Docker 
-To run the application in containers, build it with `mvn clean install -DskipTest` (the tests expect kafka and postgres at localhost, so they will fail with the docker environment parameters) and the build the containers and run them with `docker compose up --build`
-
-NOTE that if you already started kafka or postgres locally you will have to stop them, since for now the ports are colliding.
