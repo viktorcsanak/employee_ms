@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -e
+
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Checking for staged Java changes..."
+
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Detect Java changes only in module
+JAVA_CHANGED=$(echo "$STAGED_FILES" | grep '^user-service/.*\.java$' || true)
+
+if [ -z "$JAVA_CHANGED" ]; then
+  echo "No Java changes detected. Skipping backend checks."
+  exit 0
+fi
+
+echo "Java changes detected in user-service:"
+echo "$JAVA_CHANGED"
+
+cd "$ROOT_DIR/user-service" || exit 1
+
+echo "Running Spotless (FULL MODULE)..."
+mvn -q -DskipTests spotless:apply
+
+cd "$ROOT_DIR"
+
+echo "Re-staging formatted files..."
+echo "$JAVA_CHANGED" | xargs git add
+
+cd "$ROOT_DIR/user-service"
+
+echo "Running Checkstyle (FULL MODULE)..."
+mvn -q -DskipTests checkstyle:check
+
+echo "Pre-commit checks passed"

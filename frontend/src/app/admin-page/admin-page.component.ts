@@ -10,7 +10,7 @@ import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 
 interface UserData {
-    __id: any,
+    id: any,
     email: string;
     firstName: string;
     middleName: string;
@@ -20,9 +20,9 @@ interface UserData {
 }
 
 @Component({
-  selector: 'app-admin-page',
-  templateUrl: './admin-page.component.html',
-  styleUrl: './admin-page.component.css'
+    selector: 'app-admin-page',
+    templateUrl: './admin-page.component.html',
+    styleUrl: './admin-page.component.css'
 })
 export class AdminPageComponent {
     displayedColumns: string[] = ['select', 'email', 'fullName', 'admin', 'hr', 'actions'];
@@ -38,39 +38,41 @@ export class AdminPageComponent {
     constructor(
         private http: HttpClient,
         public dialog: MatDialog,
-        private router: Router) {};
+        private router: Router) { };
 
     ngOnInit(): void {
         this.fetchUserData().subscribe({
             next: (data) => {
                 console.log('data fetched', data);
-                this.dataForAdmin = new MatTableDataSource(data);
-                setTimeout (() => {
-                    this.dataForAdmin.paginator = this.paginator;
-                    this.dataForAdmin.sort = this.sort;
-                });
+                this.dataForAdmin.data = data;
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error fetching user data', error);
                 this.errorMessage = 'Failed to load user data. Please try again later.';
             }
-        }); 
+        });
         this.fetchCurrentUserData().subscribe({
             next: (data) => {
                 console.log('data fetched', data);
                 this.adminUser = data;
-                setTimeout (() => {
+                setTimeout(() => {
                 });
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error fetching user data', error);
                 this.errorMessage = 'Failed to load user data. Please try again later.';
             }
-        });   
+        });
     }
-    
+
+    ngAfterViewInit(): void {
+        this.dataForAdmin.paginator = this.paginator;
+        this.dataForAdmin.sort = this.sort;
+    }
+
     fetchUserData(): Observable<UserData[]> {
-        return this.http.get<UserData>('/api/user/management/admin').pipe(
+        const url = `/api/user/management/admin`;
+        return this.http.get<UserData>(url, { withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error occurred while fetching user data.:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -80,7 +82,8 @@ export class AdminPageComponent {
     }
 
     fetchCurrentUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        const url = `/api/user`;
+        return this.http.get<UserData>(url, { withCredentials: true }).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -94,7 +97,7 @@ export class AdminPageComponent {
         const numRows = this.dataForAdmin.data.length;
         return numSelected === numRows;
     }
-    
+
     isIndeterminate() {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataForAdmin.data.length;
@@ -106,7 +109,7 @@ export class AdminPageComponent {
             ? this.selection.clear()
             : this.dataForAdmin.data.forEach(row => this.selection.select(row));
     }
-    
+
     toggleSelection(row: UserData) {
         this.selection.toggle(row);
     }
@@ -129,16 +132,20 @@ export class AdminPageComponent {
             this.saveChanges(user);
         });
     }
-    
+
     onToggleHR() {
         this.selection.selected.forEach(user => {
             user.hrManagementAccess = !user.hrManagementAccess;
             this.saveChanges(user);
         });
     }
-    
+
     saveChanges(user: UserData): void {
-        this.http.put(`/api/user/management/${user.__id}`, { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess}).pipe().subscribe({
+        this.http.put(
+            `/api/user/management/admin/permissions/${user.id}`,
+            { adminPrivileges: user.adminPrivileges, hrManagementAccess: user.hrManagementAccess },
+            { withCredentials: true }
+        ).pipe().subscribe({
             next: (data) => {
                 console.log('User updated successfully');
             },
@@ -150,7 +157,7 @@ export class AdminPageComponent {
             }
         });
     }
-    
+
     onChangePassword(user: UserData): void {
         const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
             width: '400px',
@@ -163,7 +170,10 @@ export class AdminPageComponent {
                 return;
             }
 
-            this.http.put(`/api/user/management/${user.__id}`, { password: newPassword}).pipe().subscribe({
+            this.http.put(
+                `/api/user/management/admin/password/${user.id}`,
+                { password: newPassword }, { withCredentials: true }
+            ).pipe().subscribe({
                 next: (data) => {
                     console.log('User updated successfully');
                 },
@@ -177,11 +187,28 @@ export class AdminPageComponent {
         });
     }
 
+    logOutAllSessions(id: number): void {
+        this.http.post(
+            `/api/auth/management/admin/logout/${id}`,
+            {}, { withCredentials: true }
+        ).pipe().subscribe({
+            next: (data) => {
+                console.log('User logged out of all sessions');
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error logging out user user', error);
+            }
+        });
+    }
+
     removeUser(user: UserData): void {
-        this.http.delete(`/api/user/management/${user.__id}`).pipe().subscribe({
+        this.http.delete(
+            `/api/user/management/admin/delete/${user.id}`,
+            { withCredentials: true }
+        ).pipe().subscribe({
             next: (data) => {
                 console.log('User removed successfully');
-                this.dataForAdmin.data = this.dataForAdmin.data.filter(u => u.__id !== user.__id);
+                this.dataForAdmin.data = this.dataForAdmin.data.filter(u => u.id !== user.id);
             },
             error: (error: HttpErrorResponse) => {
                 console.error('Error removing user', error);
@@ -195,15 +222,15 @@ export class AdminPageComponent {
     applyFilter(): void {
         const filterValue = this.searchTerm.trim().toLowerCase();
 
-        this.dataForAdmin.filterPredicate = (data : UserData) => {
+        this.dataForAdmin.filterPredicate = (data: UserData) => {
             const isAdminFilter = filterValue.includes("is:admin");
             const isHRFilter = filterValue.includes("is:hr");
             const matchesSearch = data.email.toLowerCase().includes(filterValue.replace('is:admin', '').replace('is:hr', '').trim()) ||
-                                (data.firstName + ' ' + data.middleName + ' ' + data.lastName).toLowerCase().includes(filterValue.replace('is:admin', '').replace('is:hr', '').trim());
-            
+                (data.firstName + ' ' + data.middleName + ' ' + data.lastName).toLowerCase().includes(filterValue.replace('is:admin', '').replace('is:hr', '').trim());
+
             const matchesAdmin = isAdminFilter ? data.adminPrivileges : true;
             const matchesHR = isHRFilter ? data.hrManagementAccess : true;
-    
+
             return matchesSearch && matchesAdmin && matchesHR;
         };
 
@@ -219,9 +246,12 @@ export class AdminPageComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        this.http.post(
+            `/api/auth/logout`,
+            {}, { withCredentials: true }
+        ).subscribe(
             (response: any) => {
-                console.log(response.msg); // Log out successful
+                console.log(response.msg);
                 this.router.navigate(['/home']);
             },
             (error: any) => {

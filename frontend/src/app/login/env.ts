@@ -1,4 +1,4 @@
 export const environment = {
     serverUrl: "http://localhost",
-    serverPort: 3000,
+    serverPort: 8080,
 }

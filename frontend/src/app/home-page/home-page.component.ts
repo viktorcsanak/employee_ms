@@ -81,7 +81,8 @@ export class HomePageComponent {
     }
 
     fetchUserData(): Observable<UserData> {
-        return this.http.get<UserData>('/api/user/').pipe(
+        const url = `/api/user`;
+        return this.http.get<UserData>(url, {withCredentials: true}).pipe(
             catchError((error: HttpErrorResponse) => {
                 console.error('Error in fetchUserData:', error);
                 this.errorMessage = 'Error occurred while fetching user data.';
@@ -91,7 +92,8 @@ export class HomePageComponent {
     }
 
     logout(): void {
-        this.http.post('/api/auth/logout', {}).subscribe(
+        const url = `/api/auth/logout`;
+        this.http.post(url, {}, {withCredentials: true}).subscribe(
             (response: any) => {
                 console.log(response.msg); // Log out successful
                 this.router.navigate(['/login']);

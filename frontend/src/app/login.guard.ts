@@ -8,7 +8,9 @@ export const loginGuard: CanActivateFn = (route, state): Observable<boolean> => 
     const http = inject(HttpClient);
     const router = inject(Router);
 
-    return http.get('/api/auth/verify-token').pipe(
+    const url = `/api/auth/verify-token`;
+
+    return http.get(url, { withCredentials: true }).pipe(
         map((response: any) => {
             if (response.isAuthenticated) {
                 return true;
