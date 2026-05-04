@@ -1,35 +1,58 @@
-Mean stack setup on Fedora 39.
+# Employee Management System
 
-sudo dnf update
+Employee Management System is a full-stack application built as a migration of an earlier MEAN-stack project to an Angular + Spring Boot + PostgreSQL architecture.
 
-sudo dnf install nodejs
+The main focus of this version is the Java backend, which demonstrates REST API design, layered service architecture, authentication, role-based authorization, persistence with JPA/Hibernate, Kafka-based event publishing, and containerized local development.
 
-sudo tee /etc/yum.repos.d/mongodb.repo << "EOF" > /dev/null
-[mongodb]
-name=MongoDB
-baseurl=https://repo.mongodb.org/yum/redhat/9/mongodb-org/7.0/x86_64/
-gpgkey=https://www.mongodb.org/static/pgp/server-7.0.asc
-EOF
-sudo rpm --import https://www.mongodb.org/static/pgp/server-7.0.asc
-sudo dnf install mongodb-org
-sudo systemctl enable mongod.service
-sudo systemctl restart mongod.service
+## Features
 
-sudo npm install -g @angular/cli
+- User registration and management
+- Role-based access control
+- JWT-based authentication with session tracking
+- Admin and HR-specific user views
+- Password management
+- User deletion and permission management
+- PostgreSQL persistence using Spring Data JPA / Hibernate
+- Kafka event publishing for user-created events
+- Docker Compose setup for local development
+- Unit and web-layer tests with JUnit, Mockito, and MockMvc
 
-Express
-npm init -y
-npm install express --save
+## Tech Stack
 
-mongodump --out=/tmp/mongodump
+### Backend
 
-# Spring-boot(Debian 12)
+- Java 17
+- Spring Boot
+- Spring Web
+- Spring Security
+- Spring Data JPA / Hibernate
+- Spring Kafka
+- Maven
+- PostgreSQL
+- JUnit
+- Mockito
+- MockMvc
 
-## Local
+### Infrastructure
 
-To run the application with a local kafka and postgres setup run ` mvn clean install -Dspring.profiles.active=local` and `mvn spring-boot:run`
+- Docker
+- Docker Compose
+- Apache Kafka
+- PostgreSQL
 
-## Docker 
-To run the application in containers, build it with `mvn clean install -DskipTest` (the tests expect kafka and postgres at localhost, so they will fail with the docker environment parameters) and the build the containers and run them with `docker compose up --build`
+### Frontend
 
-NOTE that if you already started kafka or postgres locally you will have to stop them, since for now the ports are colliding.
+- Angular
+
+## Backend Architecture
+
+The backend follows a layered Spring Boot structure:
+
+```text
+Controller layer
+    |
+Facade / Service layer
+    |
+Repository layer
+    |
+PostgreSQL database
