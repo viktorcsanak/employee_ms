@@ -35,13 +35,7 @@ services:
       - db
       - kafka
     environment:
-      - POSTGRES_USER=userapp
-      - POSTGRES_PASSWORD=userapp
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/employee_ms_db
-      - SPRING_DATASOURCE_USERNAME=userapp
-      - SPRING_DATASOURCE_PASSWORD=userapp
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=docker
 
     ports:
       - "8080:8080"
