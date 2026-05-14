@@ -1,0 +1,5 @@
+Welcome, [(${firstName})]!
+
+Your account has been created successfully.
+
+You can now log in with: [(${email})]

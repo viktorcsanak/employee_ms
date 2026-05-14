@@ -35,7 +35,9 @@ services:
       - db
       - kafka
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_PROFILES_ACTIVE: docker
+      EMAIL_SENDER_USERNAME: your.email@gmail.com
+      EMAIL_SENDER_PASSWORD: "password goes here"
 
     ports:
       - "8080:8080"
