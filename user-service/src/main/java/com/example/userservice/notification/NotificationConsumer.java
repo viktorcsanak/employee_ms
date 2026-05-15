@@ -16,12 +16,16 @@ public class NotificationConsumer {
     this.notificationDispatcher = notificationDispatcher;
   }
 
-  @KafkaListener(topics = USER_CREATED_TOPIC)
+  @KafkaListener(
+      topics = USER_CREATED_TOPIC,
+      containerFactory = "userCreatedKafkaListenerContainerFactory")
   public void listen(UserCreatedMessage message) {
     notificationDispatcher.dispatch(NotificationEventType.USER_CREATED, message);
   }
 
-  @KafkaListener(topics = PASSWORD_CHANGED_TOPIC)
+  @KafkaListener(
+      topics = PASSWORD_CHANGED_TOPIC,
+      containerFactory = "passwordChangedByAdminKafkaListenerContainerFactory")
   public void listen(PasswordChangedByAdministratorMessage message) {
     notificationDispatcher.dispatch(NotificationEventType.PASSWORD_CHANGED, message);
   }
