@@ -32,12 +32,12 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic userCreatedDltTopic() {
-    return new NewTopic(USER_CREATED_TOPIC, 1, (short) 1);
+    return new NewTopic(USER_CREATED_TOPIC_DLT, 1, (short) 1);
   }
 
   @Bean
   public NewTopic passwordChangedDltTopic() {
-    return new NewTopic(PASSWORD_CHANGED_TOPIC, 1, (short) 1);
+    return new NewTopic(PASSWORD_CHANGED_TOPIC_DLT, 1, (short) 1);
   }
 
   @Bean
