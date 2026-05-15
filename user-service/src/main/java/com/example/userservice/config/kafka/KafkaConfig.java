@@ -17,7 +17,7 @@ public class KafkaConfig {
 
   public static final String USER_CREATED_TOPIC = "user.account.created";
   public static final String USER_CREATED_TOPIC_DLT = USER_CREATED_TOPIC + ".DLT";
-  public static final String PASSWORD_CHANGED_TOPIC = "user.account.password.chaged";
+  public static final String PASSWORD_CHANGED_TOPIC = "user.account.password.changed";
   public static final String PASSWORD_CHANGED_TOPIC_DLT = PASSWORD_CHANGED_TOPIC + ".DLT";
 
   @Bean
