@@ -17,7 +17,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
   
   db:
-    image: postgres
+    image: postgres:16
     container_name: postgres_db
     environment:
       - POSTGRES_USER=userapp
@@ -25,6 +25,8 @@ services:
       - POSTGRES_DB=employee_ms_db
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   app:
     image: 'docker-spring-boot-postgres:latest'
