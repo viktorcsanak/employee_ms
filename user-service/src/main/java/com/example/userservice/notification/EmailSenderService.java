@@ -26,7 +26,7 @@ public class EmailSenderService {
     this.senderEmail = senderEmail;
   }
 
-  public void send(TemplatedEmailMessage message) throws EmailSendingException {
+  public void send(TemplatedEmailMessage message) {
     final RenderedEmail renderedEmail =
         templateRendererService.render(message.template(), message.templateData());
 
@@ -41,7 +41,6 @@ public class EmailSenderService {
       helper.setTo(message.to());
       helper.setSubject(renderedEmail.subject());
 
-      // plain text fallback + HTML version
       helper.setText(renderedEmail.html(), true);
 
       mailSender.send(mimeMessage);
