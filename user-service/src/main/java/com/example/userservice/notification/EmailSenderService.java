@@ -37,7 +37,7 @@ public class EmailSenderService {
 
       helper.setFrom(senderEmail);
       helper.setTo(message.to());
-      helper.setSubject(message.subject());
+      helper.setSubject(renderedEmail.subject());
 
       // plain text fallback + HTML version
       helper.setText(renderedEmail.html(), true);

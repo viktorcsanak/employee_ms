@@ -1,6 +1,7 @@
 package com.example.userservice.notification.emailhandlers;
 
 import com.example.userservice.notification.EmailTemplate;
+import com.example.userservice.notification.EmailTemplateVariables;
 import com.example.userservice.notification.NotificationEventType;
 import com.example.userservice.notification.dto.TemplatedEmailMessage;
 import com.example.userservice.notification.dto.UserCreatedMessage;
@@ -23,8 +24,11 @@ public class UserCreatedEmailHandler implements EmailNotificationHandler<UserCre
   public TemplatedEmailMessage buildEmail(UserCreatedMessage message) {
     return new TemplatedEmailMessage(
         message.email(),
-        "Welcome!",
         EmailTemplate.WELCOME_EMAIL,
-        Map.of("firstName", message.firstName(), "email", message.email()));
+        Map.of(
+            EmailTemplateVariables.FIRST_NAME,
+            message.firstName(),
+            EmailTemplateVariables.EMAIL,
+            message.email()));
   }
 }

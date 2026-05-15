@@ -8,6 +8,5 @@ import java.util.Map;
 
 public record TemplatedEmailMessage(
     @NotBlank String to,
-    @NotBlank String subject,
     @NotNull EmailTemplate template,
     @NotEmpty Map<String, Object> templateData) {}
