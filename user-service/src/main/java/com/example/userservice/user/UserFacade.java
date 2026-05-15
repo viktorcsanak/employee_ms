@@ -74,7 +74,6 @@ public class UserFacade {
   public void changePassword(
       Integer id, PasswordChangeRequest request, AuthenticatedUserPrincipal authUser) {
     final User user = adminService.changePassword(id, request);
-    System.out.println("User password changed by admin " + authUser.email());
     producer.sendPasswordChangedByAdminMessage(
         new PasswordChangedByAdministratorMessage(
             user.getEmail(), user.getFirstName(), authUser.email()));

@@ -29,7 +29,6 @@ public class EmailTemplateRendererService {
 
     final String html = templateEngine.process(templateProperties.htmlTemplatePath(), context);
 
-    System.out.println("Rendered email for template " + template + ": " + html);
     return new RenderedEmail(html, templateProperties.subject());
   }
 

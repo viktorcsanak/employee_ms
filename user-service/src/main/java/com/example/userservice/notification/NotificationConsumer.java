@@ -9,10 +9,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaConsumer {
+public class NotificationConsumer {
   private final NotificationDispatcher notificationDispatcher;
 
-  public KafkaConsumer(NotificationDispatcher notificationDispatcher) {
+  public NotificationConsumer(NotificationDispatcher notificationDispatcher) {
     this.notificationDispatcher = notificationDispatcher;
   }
 
@@ -23,7 +23,6 @@ public class KafkaConsumer {
 
   @KafkaListener(topics = PASSWORD_CHANGED_TOPIC)
   public void listen(PasswordChangedByAdministratorMessage message) {
-    System.out.println("Password change message consumed: " + message);
     notificationDispatcher.dispatch(NotificationEventType.PASSWORD_CHANGED, message);
   }
 }

@@ -1,10 +1,12 @@
 package com.example.userservice.notification;
 
+import com.example.userservice.common.exception.EmailSendingException;
 import com.example.userservice.notification.dto.RenderedEmail;
 import com.example.userservice.notification.dto.TemplatedEmailMessage;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class EmailSenderService {
     this.senderEmail = senderEmail;
   }
 
-  public void send(TemplatedEmailMessage message) {
+  public void send(TemplatedEmailMessage message) throws EmailSendingException {
     final RenderedEmail renderedEmail =
         templateRendererService.render(message.template(), message.templateData());
 
@@ -45,7 +47,11 @@ public class EmailSenderService {
       mailSender.send(mimeMessage);
 
     } catch (MessagingException e) {
-      System.out.println("Messaging exception " + e.getMessage());
+      throw new EmailSendingException("Failed to render email message", e);
+    } catch (MailException e) {
+      throw new EmailSendingException("Failed to send email message", e);
+    } catch (Exception e) {
+      throw new EmailSendingException("Unhandled error while sending email message", e);
     }
   }
 }
