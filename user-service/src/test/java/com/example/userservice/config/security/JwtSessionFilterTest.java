@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
+import com.example.userservice.config.security.dto.AuthenticatedUserPrincipal;
 import com.example.userservice.permissions.Role;
 import com.example.userservice.session.Session;
 import com.example.userservice.session.SessionService;
@@ -53,19 +54,18 @@ class JwtSessionFilterTest {
 
   @Test
   void validToken_setsAuthentication_andContinues() throws Exception {
-
     when(request.getRequestURI()).thenReturn("/api/protected");
 
     Cookie cookie = new Cookie("token", "abc");
     when(request.getCookies()).thenReturn(new Cookie[] {cookie});
 
-    // mock domain objects
     Session session = mock(Session.class);
     User user = mock(User.class);
 
     when(sessionService.validateAndGetSession("abc")).thenReturn(session);
     when(session.getUser()).thenReturn(user);
     when(user.getId()).thenReturn(1);
+    when(user.getEmail()).thenReturn("user@mail.com");
     when(user.getRoles()).thenReturn(Set.of(Role.ADMIN));
 
     filter.doFilterInternal(request, response, filterChain);
@@ -73,7 +73,11 @@ class JwtSessionFilterTest {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
     assertNotNull(auth);
-    assertEquals(1, auth.getPrincipal());
+
+    AuthenticatedUserPrincipal principal = (AuthenticatedUserPrincipal) auth.getPrincipal();
+
+    assertEquals(1, principal.id());
+    assertEquals("user@mail.com", principal.email());
 
     assertTrue(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
 

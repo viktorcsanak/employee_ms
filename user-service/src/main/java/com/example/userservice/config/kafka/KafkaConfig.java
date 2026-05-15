@@ -14,10 +14,16 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 public class KafkaConfig {
 
   public static final String USER_CREATED_TOPIC = "user.account.created";
+  public static final String PASSWORD_CHANGED_TOPIC = "user.account.password.chaged";
 
   @Bean
   public NewTopic userCreatedTopic() {
     return new NewTopic(USER_CREATED_TOPIC, 1, (short) 1);
+  }
+
+  @Bean
+  public NewTopic passwordChangedTopic() {
+    return new NewTopic(PASSWORD_CHANGED_TOPIC, 1, (short) 1);
   }
 
   @Bean
