@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserCreatedEmailHandler implements EmailNotificationHandler<UserCreatedMessage> {
+public class UserCreatedHandler implements EmailNotificationHandler<UserCreatedMessage> {
   @Override
   public NotificationEventType eventType() {
     return NotificationEventType.USER_CREATED;
