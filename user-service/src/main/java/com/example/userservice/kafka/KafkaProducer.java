@@ -23,10 +23,10 @@ public class KafkaProducer {
   }
 
   public void sendUserCreatedMessage(UserCreatedMessage message) {
-    userCreatedTemplate.send(USER_CREATED_TOPIC, message);
+    userCreatedTemplate.send(USER_CREATED_TOPIC, message.email(), message);
   }
 
   public void sendPasswordChangedByAdminMessage(PasswordChangedByAdministratorMessage message) {
-    passwordChangedTemplate.send(PASSWORD_CHANGED_TOPIC, message);
+    passwordChangedTemplate.send(PASSWORD_CHANGED_TOPIC, message.email(), message);
   }
 }
