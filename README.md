@@ -124,7 +124,7 @@ The backend service is exposed on:
 http://localhost:8080
 ```
 
-## Running the Backend Locally
+## Running the backend locally
 
 Start PostgreSQL and Kafka locally, then run the backend from the `user-service` directory:
 
@@ -144,7 +144,13 @@ mvn test
 
 The current test suite contains unit and web-layer tests for service, facade, authentication, and controller behavior.
 
-## API Overview
+## Running the frontend locally
+
+```bash
+ng serve --host 0.0.0.0 --proxy-config proxy.conf.json
+```
+
+## API overview
 
 Base user endpoint:
 
