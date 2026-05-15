@@ -20,7 +20,8 @@ public class NotificationDltConsumer {
             + UserCreatedMessage.class.getName()
             + " after "
             + KafkaErrorHandlingConfig.RETRIES
-            + " retries");
+            + " retries: "
+            + message);
   }
 
   @KafkaListener(topics = PASSWORD_CHANGED_TOPIC_DLT)
@@ -30,6 +31,7 @@ public class NotificationDltConsumer {
             + PasswordChangedByAdministratorMessage.class.getName()
             + " after "
             + KafkaErrorHandlingConfig.RETRIES
-            + " retries");
+            + " retries: "
+            + message);
   }
 }
