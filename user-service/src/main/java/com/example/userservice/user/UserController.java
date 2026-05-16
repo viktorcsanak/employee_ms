@@ -1,5 +1,6 @@
 package com.example.userservice.user;
 
+import com.example.userservice.config.security.dto.AuthenticatedUserPrincipal;
 import com.example.userservice.user.dto.AdminUserResponse;
 import com.example.userservice.user.dto.HrUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
@@ -12,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,8 +63,10 @@ public class UserController {
   @PutMapping("management/admin/password/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public void changePassword(
-      @PathVariable @NotNull Integer id, @Valid @RequestBody PasswordChangeRequest request) {
-    userFacade.changePassword(id, request);
+      @PathVariable @NotNull Integer id,
+      @Valid @RequestBody PasswordChangeRequest request,
+      @AuthenticationPrincipal AuthenticatedUserPrincipal authUser) {
+    userFacade.changePassword(id, request, authUser);
   }
 
   @DeleteMapping("/management/admin/delete/{id}")

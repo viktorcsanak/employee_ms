@@ -2,6 +2,7 @@ package com.example.userservice.config.security;
 
 import com.example.userservice.common.exception.SessionNotFoundException;
 import com.example.userservice.common.exception.UserUnauthorizedException;
+import com.example.userservice.config.security.dto.AuthenticatedUserPrincipal;
 import com.example.userservice.session.Session;
 import com.example.userservice.session.SessionService;
 import jakarta.servlet.FilterChain;
@@ -66,8 +67,10 @@ public class JwtSessionFilter extends OncePerRequestFilter {
       final var authorities =
           roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
 
+      final AuthenticatedUserPrincipal principal =
+          new AuthenticatedUserPrincipal(session.getUser().getId(), session.getUser().getEmail());
       final UsernamePasswordAuthenticationToken authentication =
-          new UsernamePasswordAuthenticationToken(session.getUser().getId(), null, authorities);
+          new UsernamePasswordAuthenticationToken(principal, null, authorities);
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 

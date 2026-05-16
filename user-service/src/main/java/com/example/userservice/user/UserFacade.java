@@ -1,6 +1,10 @@
 package com.example.userservice.user;
 
 import com.example.userservice.auth.JwtService;
+import com.example.userservice.config.security.dto.AuthenticatedUserPrincipal;
+import com.example.userservice.kafka.KafkaProducer;
+import com.example.userservice.notification.dto.PasswordChangedByAdministratorMessage;
+import com.example.userservice.notification.dto.UserCreatedMessage;
 import com.example.userservice.user.dto.AdminUserResponse;
 import com.example.userservice.user.dto.HrUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
@@ -20,6 +24,7 @@ public class UserFacade {
   private final UserMapper mapper;
   private final JwtService jwtService;
   private final UserAdministrationService adminService;
+  private final KafkaProducer producer;
 
   public UserFacade(
       UserService userService,
@@ -27,17 +32,22 @@ public class UserFacade {
       RegistrationService registrationService,
       UserMapper mapper,
       JwtService jwtService,
-      UserAdministrationService adminService) {
+      UserAdministrationService adminService,
+      KafkaProducer producer) {
     this.userService = userService;
     this.queryService = userQueryService;
     this.registrationService = registrationService;
     this.mapper = mapper;
     this.jwtService = jwtService;
     this.adminService = adminService;
+    this.producer = producer;
   }
 
   public User register(RegisterRequest request) {
-    return registrationService.register(request);
+    final User user = registrationService.register(request);
+    // TODO: implement outbox pattern
+    producer.sendUserCreatedMessage(new UserCreatedMessage(user.getEmail(), user.getFirstName()));
+    return user;
   }
 
   public UserProfileResponse getProfile(Integer id) {
@@ -61,8 +71,12 @@ public class UserFacade {
     adminService.grantOrRevokePermissions(id, request);
   }
 
-  public void changePassword(Integer id, PasswordChangeRequest request) {
-    adminService.changePassword(id, request);
+  public void changePassword(
+      Integer id, PasswordChangeRequest request, AuthenticatedUserPrincipal authUser) {
+    final User user = adminService.changePassword(id, request);
+    producer.sendPasswordChangedByAdminMessage(
+        new PasswordChangedByAdministratorMessage(
+            user.getEmail(), user.getFirstName(), authUser.email()));
   }
 
   public void deleteUser(Integer id) {

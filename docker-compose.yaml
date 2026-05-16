@@ -17,7 +17,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
   
   db:
-    image: postgres
+    image: postgres:16
     container_name: postgres_db
     environment:
       - POSTGRES_USER=userapp
@@ -25,6 +25,8 @@ services:
       - POSTGRES_DB=employee_ms_db
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   app:
     image: 'docker-spring-boot-postgres:latest'
@@ -35,13 +37,9 @@ services:
       - db
       - kafka
     environment:
-      - POSTGRES_USER=userapp
-      - POSTGRES_PASSWORD=userapp
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/employee_ms_db
-      - SPRING_DATASOURCE_USERNAME=userapp
-      - SPRING_DATASOURCE_PASSWORD=userapp
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_PROFILES_ACTIVE=dev
+      SPRING_PROFILES_ACTIVE: docker
+      EMAIL_SENDER_USERNAME: ${EMAIL_SENDER_USERNAME}
+      EMAIL_SENDER_PASSWORD: ${EMAIL_SENDER_PASSWORD}
 
     ports:
       - "8080:8080"

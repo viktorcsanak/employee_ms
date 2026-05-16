@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+</head>
+
+<body>
+  <h1>
+    Welcome, <span th:text="${firstName}">User</span>!
+  </h1>
+
+  <p>
+    Your account has been created successfully.
+  </p>
+
+  <p>
+    You can now log in with:
+    <strong th:text="${email}">user@example.com</strong>
+  </p>
+</body>
+
+</html>

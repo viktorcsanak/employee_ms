@@ -59,13 +59,13 @@ public class UserAdministrationService {
     sessionService.removeAllUserSessions(id);
   }
 
-  public void changePassword(Integer id, PasswordChangeRequest request) {
+  public User changePassword(Integer id, PasswordChangeRequest request) {
     if (!repo.existsById(id)) {
       throw new UserNotFoundException("User not found: " + id);
     }
 
     final User user = repo.getReferenceById(id);
     user.setPassword(passwordEncoder.encode(request.password()));
-    repo.save(user);
+    return repo.saveAndFlush(user);
   }
 }

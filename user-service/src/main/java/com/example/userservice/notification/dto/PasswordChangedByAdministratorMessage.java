@@ -4,4 +4,5 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UserCreatedMessage(@NotNull @Email String email, @NotBlank String firstName) {}
+public record PasswordChangedByAdministratorMessage(
+    @NotNull @Email String email, @NotBlank String firstName, @NotBlank String adminEmail) {}

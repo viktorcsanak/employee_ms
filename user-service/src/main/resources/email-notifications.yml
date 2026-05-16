@@ -1,0 +1,16 @@
+email-notifications:
+  templates:
+    WELCOME_EMAIL:
+      subject: "Welcome!"
+      html-template-path: "email/html/welcome-email"
+      required-variables:
+        - firstName
+        - email
+    
+    PASSWORD_CHANGED:
+      subject: "Your password was changed"
+      html-template-path: "email/html/password-changed"
+      required-variables:
+        - firstName
+        - email
+        - adminEmail
