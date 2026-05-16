@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import com.example.userservice.common.exception.UserExistsException;
 import com.example.userservice.common.exception.UserNotFoundException;
-import com.example.userservice.kafka.KafkaProducer;
 import com.example.userservice.user.model.User;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class UserServiceTest {
 
   @Mock private UserRepository repo;
-
-  @Mock private KafkaProducer producer;
 
   @InjectMocks private UserService userService;
 

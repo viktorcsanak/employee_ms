@@ -109,6 +109,7 @@ class UserAdministrationServiceTest {
     when(repo.existsById(1)).thenReturn(true);
     when(repo.getReferenceById(1)).thenReturn(user);
     when(passwordEncoder.encode("newPass")).thenReturn("hashed");
+    when(repo.saveAndFlush(user)).thenReturn(user);
 
     PasswordChangeRequest request = mock(PasswordChangeRequest.class);
     when(request.password()).thenReturn("newPass");
@@ -117,7 +118,7 @@ class UserAdministrationServiceTest {
 
     assertEquals("hashed", user.getPassword());
 
-    verify(repo).save(user);
+    verify(repo).saveAndFlush(user);
   }
 
   @Test

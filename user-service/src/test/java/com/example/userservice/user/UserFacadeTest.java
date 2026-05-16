@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.userservice.auth.JwtService;
+import com.example.userservice.config.security.dto.AuthenticatedUserPrincipal;
+import com.example.userservice.kafka.KafkaProducer;
 import com.example.userservice.user.dto.AdminUserResponse;
 import com.example.userservice.user.dto.HrUserResponse;
 import com.example.userservice.user.dto.PasswordChangeRequest;
@@ -29,6 +31,7 @@ class UserFacadeTest {
   @Mock private UserMapper mapper;
   @Mock private JwtService jwtService;
   @Mock private UserAdministrationService adminService;
+  @Mock private KafkaProducer producer;
 
   @InjectMocks private UserFacade facade;
 
@@ -77,8 +80,16 @@ class UserFacadeTest {
     PermissionChangeRequest p = mock(PermissionChangeRequest.class);
     PasswordChangeRequest pw = mock(PasswordChangeRequest.class);
 
+    AuthenticatedUserPrincipal authUser = new AuthenticatedUserPrincipal(2, "admin@mail.com");
+
+    User changedUser = mock(User.class);
+    when(changedUser.getEmail()).thenReturn("user@mail.com");
+    when(changedUser.getFirstName()).thenReturn("Viktor");
+
+    when(adminService.changePassword(1, pw)).thenReturn(changedUser);
+
     facade.grantOrRevokePermissions(1, p);
-    facade.changePassword(1, pw);
+    facade.changePassword(1, pw, authUser);
     facade.deleteUser(1);
 
     verify(adminService).grantOrRevokePermissions(1, p);
