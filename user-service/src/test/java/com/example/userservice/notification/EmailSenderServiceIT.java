@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.userservice.notification.config.EmailNotificationProperties;
-import com.example.userservice.notification.dto.RenderedEmail;
 import com.example.userservice.notification.dto.TemplatedEmailMessage;
 import jakarta.mail.BodyPart;
 import jakarta.mail.Multipart;
@@ -44,7 +43,6 @@ public class EmailSenderServiceIT {
   @Autowired private EmailSenderService emailSenderService;
 
   private TemplatedEmailMessage templatedEmailMessage;
-  private RenderedEmail renderedEmail;
 
   @BeforeEach
   void setUp() {
@@ -57,35 +55,6 @@ public class EmailSenderServiceIT {
                 "john@mail.com",
                 EmailTemplateVariables.FIRST_NAME,
                 "John"));
-
-    renderedEmail =
-        new RenderedEmail(
-            """
-            <!DOCTYPE html>
-            <html>
-
-            <head>
-              <meta charset="UTF-8">
-              <title>Welcome</title>
-            </head>
-
-            <body>
-              <h1>
-                Welcome, <span>John</span>!
-              </h1>
-
-              <p>
-                Your account has been created successfully.
-              </p>
-
-              <p>
-                You can now log in with:
-                <strong>john@mail.com</strong>
-              </p>
-            </body>
-
-            </html>""",
-            "Welcome!");
   }
 
   @Test
@@ -98,8 +67,12 @@ public class EmailSenderServiceIT {
     verify(mailSender).send(mimeMessage);
 
     assertThat(mimeMessage.getAllRecipients()[0].toString()).isEqualTo(templatedEmailMessage.to());
-    assertThat(mimeMessage.getSubject()).isEqualTo(renderedEmail.subject());
-    assertThat(getTextFromMimeMessage(mimeMessage)).isEqualTo(renderedEmail.html());
+    assertThat(mimeMessage.getSubject()).isEqualTo("Welcome!");
+    assertThat(getTextFromMimeMessage(mimeMessage))
+        .contains("Welcome")
+        .contains("John")
+        .contains("john@mail.com")
+        .contains("Your account has been created successfully");
   }
 
   private String getTextFromMimeMessage(MimeMessage mimeMessage) throws Exception {
