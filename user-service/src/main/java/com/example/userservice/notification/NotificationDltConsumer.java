@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 public class NotificationDltConsumer {
   public NotificationDltConsumer() {}
 
-  @KafkaListener(topics = USER_CREATED_TOPIC_DLT)
+  @KafkaListener(
+      topics = USER_CREATED_TOPIC_DLT,
+      containerFactory = "userCreatedKafkaListenerContainerFactory")
   public void listen(UserCreatedMessage message) {
     System.out.println(
         "Failed to send "
@@ -24,7 +26,9 @@ public class NotificationDltConsumer {
             + message);
   }
 
-  @KafkaListener(topics = PASSWORD_CHANGED_TOPIC_DLT)
+  @KafkaListener(
+      topics = PASSWORD_CHANGED_TOPIC_DLT,
+      containerFactory = "passwordChangedByAdminKafkaListenerContainerFactory")
   public void listen(PasswordChangedByAdministratorMessage message) {
     System.out.println(
         "Failed to send "
