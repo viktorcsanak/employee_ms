@@ -115,7 +115,7 @@ public class EmailSenderServiceTest {
 
     assertThatThrownBy(() -> invalidEmailSenderService.send(templatedEmailMessage))
         .isInstanceOf(EmailSendingException.class)
-        .hasMessageContaining("Failed to render email message");
+        .hasMessageContaining("Failed to prepare email message");
   }
 
   private String getTextFromMimeMessage(MimeMessage mimeMessage) throws Exception {

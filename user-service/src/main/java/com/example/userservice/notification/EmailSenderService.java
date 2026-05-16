@@ -46,11 +46,9 @@ public class EmailSenderService {
       mailSender.send(mimeMessage);
 
     } catch (MessagingException e) {
-      throw new EmailSendingException("Failed to render email message", e);
+      throw new EmailSendingException("Failed to prepare email message", e);
     } catch (MailException e) {
       throw new EmailSendingException("Failed to send email message", e);
-    } catch (Exception e) {
-      throw new EmailSendingException("Unhandled error while sending email message", e);
     }
   }
 }
