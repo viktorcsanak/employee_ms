@@ -64,7 +64,7 @@ public class EmailSenderServiceTest {
               <p>Your account has been created successfully.</p>
               <p>You can now log in with:<strong>john@mail.com</strong></p>
             </body>
-            </html""",
+            </html>""",
             "Welcome!");
   }
 
